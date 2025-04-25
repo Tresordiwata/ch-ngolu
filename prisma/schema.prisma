@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+model Cloture {
+  id              String      @id @default(uuid())
+  date            DateTime    @default(now())
+  succursaleId    String
+  utilisateurId   String
+  succursale      Succursale  @relation(fields: [succursaleId], references: [id])
+  utilisateur     Utilisateur @relation(fields: [utilisateurId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("clotures")
+}
+model Depense {
+  id                   String              @id @default(uuid())
+  montant              Float
+  dateDepense          DateTime
+  devise               String
+  description          String?
+  pieceJustificative   String?
+  fournisseurId        String?
+  succursaleId         String?
+  utilisateurId        String
+  rubriqueId           Int
+  rubrique             Rubrique? @relation(fields: [rubriqueId], references: [id])
+  estCloturee          ClotureStatus       @default(N)
+  fournisseur          Fournisseur?        @relation(fields: [fournisseurId], references: [id])
+  beneficiaire         String?        
+  succursale           Succursale?          @relation(fields: [succursaleId], references: [id])
+  utilisateur          Utilisateur         @relation(fields: [utilisateurId], references: [id])
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  status                Status @default(A)
+  @@map("depenses")
+}
+model Fournisseur {
+  id          String    @id @default(uuid())
+  nom         String
+  email       String    @unique
+  telephone   String
+  adresse     String
+  rccm        String    @unique
+  depenses    Depense[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("fournisseurs")
+}
+model Recette {
+  id                   String @id @default(uuid())
+  montant              Float
+  devise               String 
+  dateRecette          DateTime
+  rubriqueId           Int
+  rubrique             Rubrique? @relation(fields: [rubriqueId], references: [id])
+  succursaleId         String
+  succursale           Succursale          @relation(fields: [succursaleId], references: [id])
+  estCloturee          ClotureStatus       @default(N)
+  utilisateurId        String         
+  utilisateur          Utilisateur         @relation(fields: [utilisateurId], references: [id])
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  observation          String?             
+  status               Status              @default(A)
+  @@map("recettes")
+}
+model Rubrique{
+  id Int    @id @default(autoincrement())
+  typeRubr String
+  libelle String
+  Status String @default("A")
+  depense Depense[]
+  recette Recette[]  
+}
+model Succursale {
+  id              String            @id @default(uuid())
+  code             String
+  nom             String
+  adresse         String?
+  telephone       String?
+  email           String?            
+  utilisateurs    Utilisateur[]
+  depenses        Depense[]
+  recettes         Recette[]
+  clotures        Cloture[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Status          String?            @default("A")
+
+  @@map("succursales")
+}
+
+model Utilisateur {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  motDePasse      String
+  nom             String
+  prenom          String
+  role            Role              @default(UTILISATEUR)
+  estActif        Boolean           @default(true)
+  succursaleId    String?
+  succursale      Succursale?       @relation(fields: [succursaleId], references: [id])
+  depensesCreees  Depense[]
+  recette         Recette[]
+  clotures        Cloture[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Status          String            @default("A") 
+
+  @@map("utilisateurs")
+}
+model DepensePlanifiee {
+  id          String    @id @default(uuid())
+  montant     Float
+  description String?
+  jourDuMois  Int
+  succursaleId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("depenses_planifiees")
+}
+
+enum Role {
+  ADMIN_GENERAL
+  ADMIN_SUCCURSALE
+  UTILISATEUR
+}
+enum ClotureStatus {
+  N
+  OL
+  OG
+  // N:Non, O:Oui Local, OG:Oui global
+}
+enum Status {
+  A
+  D
+  S
+}
