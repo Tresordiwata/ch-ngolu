@@ -80,7 +80,7 @@ export default function LoginPageClient() {
                 alt="logo"
                 className=" text-white"
                 height={120}
-                src={"/vercel.svg"}
+                src={"/logo.jpeg"}
                 width={120}
               />
             </div>
@@ -99,7 +99,7 @@ export default function LoginPageClient() {
                 labelPlacement="outside"
                 name="login"
                 type=""
-                color="warning"
+                color="primary"
                 // onChange={(e) => setEmail(e.target.value)}
                 required
               />
@@ -108,7 +108,7 @@ export default function LoginPageClient() {
           <div className="">
             <Input
               required
-              color="warning"
+              color="primary"
               id="password"
               label="Mot de passe"
               labelPlacement="outside"
@@ -119,12 +119,12 @@ export default function LoginPageClient() {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <input
+              {/* <input
                 className="h-4 w-4 rounded border-gray-300 text-[#072baf] focus:ring-[#072baf]"
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-              />
+              /> */}
               {/* <label
                 htmlFor="remember-me"
                 className="ml-2 block text-sm text-gray-900"

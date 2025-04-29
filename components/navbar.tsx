@@ -28,6 +28,7 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, SearchIcon, Logo } from "@/components/icons";
 import { useAuthStore } from "@/lib/store/authStore";
+import Image from "next/image";
 
 export const Navbar = () => {
   const router = useRouter();
@@ -75,7 +76,7 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
+            {/* <Image src={"/logo.jpeg"} width={20} height={20} alt="logo" /> */}
             <p className="font-bold text-inherit">CH-NGOLU</p>
           </NextLink>
         </NavbarBrand>
