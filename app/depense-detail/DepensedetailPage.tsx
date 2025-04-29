@@ -116,8 +116,7 @@ const DepensedetailPage = ({
       <Spin spinning={loading}>
         {error && (
           <Alert className="w-full mb-5" color="danger" variant="bordered">
-            {" "}
-            Une erreur s'est produite
+            {"Une erreur s'est produite"}
           </Alert>
         )}
         <Card>

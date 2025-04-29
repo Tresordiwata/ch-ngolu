@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Input } from "@heroui/input";
 
 import { useAuthStore } from "@/lib/store/authStore";
+import Link from "next/link";
 
 export default function LoginPageClient() {
   const [submitting,setSubmitting]=useState(false)
@@ -134,18 +135,17 @@ export default function LoginPageClient() {
             </div>
 
             <div className="text-sm">
-              <a className="font-medium text-[#072baf] hover:text-[#afa316]" href="#">
+              <Link className="font-medium text-[#072baf] hover:text-[#afa316]" href="#">
                 Mot de passe oublié?
-              </a>
+              </Link>
             </div>
           </div>
 
           <Button
             className="w-full"
             color="primary"
-            htmlType="submit"
-            loading={submitting}
-            type="primary"
+            loading={submitting }
+            type="submit"
           >
             Se connecter
           </Button>
