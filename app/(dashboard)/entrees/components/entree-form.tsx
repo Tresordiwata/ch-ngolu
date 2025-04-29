@@ -129,7 +129,7 @@ export function EntreeForm({
                     errorMessage={errors.typeEntreeId?.message}
                   >
                     {typesEntree.map((type) => (
-                      <SelectItem key={type.id} value={type.id}>
+                      <SelectItem key={type.id}>
                         {type.libelle}
                       </SelectItem>
                     ))}

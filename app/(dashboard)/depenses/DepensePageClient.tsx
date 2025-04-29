@@ -157,13 +157,13 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
             >
-              <SelectItem key="tous" value="tous">
+              <SelectItem key="tous">
                 Tous
               </SelectItem>
-              <SelectItem key="interne" value="interne">
+              <SelectItem key="interne">
                 Interne
               </SelectItem>
-              <SelectItem key="externe" value="externe">
+              <SelectItem key="externe">
                 Externe
               </SelectItem>
             </Select>
@@ -173,13 +173,13 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <SelectItem key="tous" value="tous">
+              <SelectItem key="tous">
                 Tous
               </SelectItem>
-              <SelectItem key="cloturees" value="cloturees">
+              <SelectItem key="cloturees">
                 Clôturées
               </SelectItem>
-              <SelectItem key="non-cloturees" value="non-cloturees">
+              <SelectItem key="non-cloturees">
                 Non Clôturées
               </SelectItem>
             </Select>
@@ -257,7 +257,7 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
             </div>
             <DatePicker
             isRequired
-            defaultValue={now(getLocalTimeZone())}
+
              granularity="day"
              label="Date depense"
               labelPlacement="outside"

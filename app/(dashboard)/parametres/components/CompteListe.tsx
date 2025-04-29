@@ -137,7 +137,7 @@ const CompteListe = () => {
                   return b.status !== "B";
                 })
                 ?.map((banque, i) => (
-                  <SelectItem key={banque?.id || null}>
+                  <SelectItem key={`${banque?.id}`}>
                     {banque?.nom}
                   </SelectItem>
                 ))}

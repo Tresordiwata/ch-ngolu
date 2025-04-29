@@ -136,7 +136,7 @@ export default function ParametreClientPage({
 
       const utilisateurMisAJour = await response.json();
 
-      setAuth(utilisateurMisAJour, utilisateur?.token || "");
+      // setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
       toast.error("Une erreur est survenue");

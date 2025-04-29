@@ -57,22 +57,7 @@ export default function Succursale({ profil }: { profil: IUtilisateur }) {
   }, []);
   // Fin Modal
 
-  const { data: succursale } = useQuery<Succursale>({
-    queryKey: ["succursale", utilisateur?.succursaleId],
-    queryFn: async () => {
-      const response = await fetch(
-        `/api/succursales/${utilisateur?.succursaleId}`,
-      );
-
-      if (!response.ok)
-        throw new Error(
-          "Erreur lors du chargement des données de la succursale",
-        );
-
-      return response.json();
-    },
-    enabled: !!utilisateur?.succursaleId,
-  });
+ 
 
   const {
     register: registerProfil,
@@ -115,7 +100,7 @@ export default function Succursale({ profil }: { profil: IUtilisateur }) {
 
       const utilisateurMisAJour = await response.json();
 
-      setAuth(utilisateurMisAJour, utilisateur?.token || "");
+      // setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
       toast.error("Une erreur est survenue");

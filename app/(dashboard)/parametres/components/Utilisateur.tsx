@@ -75,7 +75,7 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
 
   const onSubmitProfil = async (data: ProfilForm) => {
     try {
-      const response = await fetch(`/api/utilisateurs/${utilisateur?.id}`, {
+      const response = await fetch(`/api/utilisateurs/${profil?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
 
       const utilisateurMisAJour = await response.json();
 
-      setAuth(utilisateurMisAJour, utilisateur?.token || "");
+      // setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
       toast.error("Une erreur est survenue");
@@ -99,7 +99,7 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
   const onSubmitMotDePasse = async (data: MotDePasseForm) => {
     try {
       const response = await fetch(
-        `/api/utilisateurs/${utilisateur?.id}/mot-de-passe`,
+        `/api/utilisateurs/${profil?.id}/mot-de-passe`,
         {
           method: "PUT",
           headers: {
@@ -113,7 +113,7 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
         throw new Error("Erreur lors de la mise à jour du mot de passe");
       }
 
-      resetMotDePasse();
+      // resetMotDePasse();
       toast.success("Mot de passe mis à jour avec succès");
     } catch (error) {
       toast.error("Une erreur est survenue");

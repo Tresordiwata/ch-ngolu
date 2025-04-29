@@ -13,7 +13,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import Link from "next/link";
 
 export default function LoginPageClient() {
-  const [submitting,setSubmitting]=useState(false)
+  const [submitting,setSubmitting]=useState<boolean>(false)
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
 
@@ -144,7 +144,7 @@ export default function LoginPageClient() {
           <Button
             className="w-full"
             color="primary"
-            loading={submitting }
+            isLoading={submitting}
             type="submit"
           >
             Se connecter

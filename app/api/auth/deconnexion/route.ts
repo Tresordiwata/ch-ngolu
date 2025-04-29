@@ -8,8 +8,8 @@ export async function GET(Request: NextRequest) {
     Cookies.delete("profil");
 
     return NextResponse.json({"deconnected":true}, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: error.toString() }, { status: 501 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.toString() }, { status: 501 });
   }
 }
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem } from "@heroui/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuthStore } from "@/lib/store/authStore";
-import { PDFExport } from "../../components/pdf-export";
+import PDFExport from "../../components/pdf-export";
 import { useState } from "react";
 
 const rapportSchema = z.object({
@@ -118,9 +118,9 @@ export function RapportForm({ isOpen, onClose }: RapportFormProps) {
                       onChange={field.onChange}
                       errorMessage={errors.type?.message}
                     >
-                      <SelectItem key="global" value="global">Rapport Global</SelectItem>
-                      <SelectItem key="depenses" value="depenses">Dépenses</SelectItem>
-                      <SelectItem key="entrees" value="entrees">Entrées</SelectItem>
+                      <SelectItem key="global" >Rapport Global</SelectItem>
+                      <SelectItem key="depenses">Dépenses</SelectItem>
+                      <SelectItem key="entrees">Entrées</SelectItem>
                     </Select>
                   )}
                 />
@@ -135,8 +135,8 @@ export function RapportForm({ isOpen, onClose }: RapportFormProps) {
                       onChange={field.onChange}
                       errorMessage={errors.format?.message}
                     >
-                      <SelectItem key="detaille" value="detaille">Détaillé</SelectItem>
-                      <SelectItem key="resume" value="resume">Résumé</SelectItem>
+                      <SelectItem key="detaille" >Détaillé</SelectItem>
+                      <SelectItem key="resume">Résumé</SelectItem>
                     </Select>
                   )}
                 />
@@ -153,14 +153,6 @@ export function RapportForm({ isOpen, onClose }: RapportFormProps) {
           </form>
         </ModalContent>
       </Modal>
-
-      {showPDF && rapportData && (
-        <PDFExport
-          isOpen={showPDF}
-          onClose={handleClosePDF}
-          data={rapportData}
-        />
-      )}
     </>
   );
 }

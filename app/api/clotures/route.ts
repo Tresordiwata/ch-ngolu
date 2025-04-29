@@ -91,27 +91,16 @@ export async function POST(request: Request) {
       prisma.depense.updateMany({
         where: {
           succursaleId,
-          estCloturee: false,
+          estCloturee: 'N',
           createdAt: {
             lte: new Date(),
           },
         },
         data: {
-          estCloturee: true,
+          estCloturee: 'N',
         },
       }),
-      prisma.entree.updateMany({
-        where: {
-          succursaleId,
-          estCloturee: false,
-          createdAt: {
-            lte: new Date(),
-          },
-        },
-        data: {
-          estCloturee: true,
-        },
-      }),
+      
     ]);
 
     return NextResponse.json(cloture);

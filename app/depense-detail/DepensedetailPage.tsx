@@ -140,15 +140,15 @@ const DepensedetailPage = ({
                 label="Date"
                 labelPlacement="outside-left"
                 type="text"
-                value={data?.rubrique?.libelle}
-                onChange={(e) => setData({ ...data })}
+                // value={data?.rubrique?.libelle}
+                // onChange={(e) => setData({ ...data })}
               />
               <NumberInput
                 endContent={<div>{data?.devise}</div>}
                 label="Montant"
                 labelPlacement="outside-left"
-                value={Number(data?.montant)}
-                onChange={(e) => setData({ ...data, montant: Number(e) })}
+                // value={Number(data?.montant)}
+                // onChange={(e) => setData({ ...data, montant: Number(e) })}
               />
             </div>
             <div className="grid grid-cols-3">

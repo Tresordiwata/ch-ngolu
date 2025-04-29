@@ -7,7 +7,7 @@ import { Plus, FileUp, Filter, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "@/lib/store/authStore";
 import UtilisateurForm  from "./components/utilisateur-form";
-import { PDFExport } from "../components/pdf-export";
+import  PDFExport from "../components/pdf-export";
 
 interface Utilisateur {
   id: string;
@@ -23,7 +23,7 @@ interface Utilisateur {
 }
 
 export default function UtilisateursPage() {
-  const utilisateur = useAuthStore((state) => state.utilisateur);
+  // const utilisateur = useAuthStore((state) => state.utilisateur);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [selectedUtilisateur, setSelectedUtilisateur] = useState<Utilisateur | undefined>();
@@ -118,19 +118,19 @@ export default function UtilisateursPage() {
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
-              <SelectItem key="tous" value="tous">Tous</SelectItem>
-              <SelectItem key="ADMIN_GENERAL" value="ADMIN_GENERAL">Admin Général</SelectItem>
-              <SelectItem key="ADMIN_SUCCURSALE" value="ADMIN_SUCCURSALE">Admin Succursale</SelectItem>
-              <SelectItem key="UTILISATEUR" value="UTILISATEUR">Utilisateur</SelectItem>
+              <SelectItem key="tous">Tous</SelectItem>
+              <SelectItem key="ADMIN_GENERAL" >Admin Général</SelectItem>
+              <SelectItem key="ADMIN_SUCCURSALE">Admin Succursale</SelectItem>
+              <SelectItem key="UTILISATEUR" >Utilisateur</SelectItem>
             </Select>
             <Select
               label="Statut"
               value={statutFilter}
               onChange={(e) => setStatutFilter(e.target.value)}
             >
-              <SelectItem key="tous" value="tous">Tous</SelectItem>
-              <SelectItem key="actifs" value="actifs">Actifs</SelectItem>
-              <SelectItem key="inactifs" value="inactifs">Inactifs</SelectItem>
+              <SelectItem key="tous" >Tous</SelectItem>
+              <SelectItem key="actifs" >Actifs</SelectItem>
+              <SelectItem key="inactifs" >Inactifs</SelectItem>
             </Select>
           </div>
         </CardBody>
@@ -203,17 +203,17 @@ export default function UtilisateursPage() {
         </CardBody>
       </Card>
 
-      <UtilisateurForm
+      {/* <UtilisateurForm
         isOpen={isFormOpen}
         onClose={handleClose}
         utilisateur={selectedUtilisateur}
-      />
+      /> */}
 
-      <PDFExport
+      {/* <PDFExport
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
         data={exportData}
-      />
+      /> */}
     </div>
   );
 }

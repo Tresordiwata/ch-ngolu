@@ -6,7 +6,6 @@ import { Plus, FileUp, Filter, Mail, Phone, Building, FileText } from "lucide-re
 import { useState } from "react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { FournisseurForm } from "./components/fournisseur-form";
-import { PDFExport } from "../components/pdf-export";
 
 interface Fournisseur {
   id: string;
@@ -156,11 +155,7 @@ export default function FournisseursPage() {
         fournisseur={selectedFournisseur}
       />
 
-      <PDFExport
-        isOpen={isExportOpen}
-        onClose={() => setIsExportOpen(false)}
-        data={exportData}
-      />
+     
     </div>
   );
 }

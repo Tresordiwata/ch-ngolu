@@ -1,6 +1,6 @@
 'use client';
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -148,8 +148,8 @@ export function DepenseForm({
                     onChange={field.onChange}
                     errorMessage={errors.typeDepense?.message}
                   >
-                    <SelectItem key="interne" value="interne">Interne</SelectItem>
-                    <SelectItem key="externe" value="externe">Externe</SelectItem>
+                    <SelectItem key="interne">Interne</SelectItem>
+                    <SelectItem key="externe">Externe</SelectItem>
                   </Select>
                 )}
               />
@@ -165,7 +165,7 @@ export function DepenseForm({
                     errorMessage={errors.typeDepenseId?.message}
                   >
                     {(typeDepense === "interne" ? typesDepenseInterne : typesDepenseExterne).map((type) => (
-                      <SelectItem key={type.id} value={type.id}>
+                      <SelectItem key={type.id}>
                         {type.libelle}
                       </SelectItem>
                     ))}
@@ -185,7 +185,7 @@ export function DepenseForm({
                       errorMessage={errors.fournisseurId?.message}
                     >
                       {fournisseurs.map((fournisseur) => (
-                        <SelectItem key={fournisseur.id} value={fournisseur.id}>
+                        <SelectItem key={fournisseur.id} >
                           {fournisseur.nom}
                         </SelectItem>
                       ))}
