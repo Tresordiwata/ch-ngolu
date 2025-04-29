@@ -31,7 +31,7 @@ export default function ModalWithForm({
   cancelText?: string;
   action: string;
   endPoint: string;
-  beforeSubmitFn?:()=>void
+  beforeSubmitFn?:(arg?:any)=>void
 }) {
   const [confirmSubmitForm, setConfirmSubmitForm] = useState(false);
   const [spinning, setSpinning] = useState(false);
