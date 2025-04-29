@@ -6,6 +6,41 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL") 
 }
+model Banque {
+  id      String @id @default(uuid())
+  nom     String @unique
+  status  Status @default(A)
+  compte  Compte[]
+  @@map("banques")
+}
+model Caisse{
+  id                String @id @default(uuid())
+  succursaleId      String
+  sucursale         Succursale  @relation(fields: [succursaleId],references: [id])
+  montant           Float @default(0)
+  caisseOperation   CaisseOperation []
+  devise            devise  @default(USD)
+  @@unique([devise,succursaleId])
+  @@map("caisses")
+}
+model CaisseOperation{
+  id            String @id @default(uuid())
+  caisseId      String
+  caisse        Caisse  @relation(fields: [caisseId],references: [id])
+  action        typeOperation
+  createdAt     DateTime @default(now())
+}
+model Compte {
+  id        String @id @default(uuid())
+  numero    String @unique
+  devise    devise
+  nom       String?
+  banqueId  String
+  solde     Float @default(0)
+  banque    Banque @relation(fields: [banqueId],references: [id])
+  versement Versement[]
+  status    Status @default(A)
+}
 model Cloture {
   id              String      @id @default(uuid())
   date            DateTime    @default(now())
@@ -39,6 +74,17 @@ model Depense {
   updatedAt            DateTime            @updatedAt
   status                Status @default(A)
   @@map("depenses")
+}
+model DepensePlanifiee {
+  id          String    @id @default(uuid())
+  montant     Float
+  description String?
+  jourDuMois  Int
+  succursaleId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("depenses_planifiees")
 }
 model Fournisseur {
   id          String    @id @default(uuid())
@@ -75,28 +121,28 @@ model Rubrique{
   id Int    @id @default(autoincrement())
   typeRubr String
   libelle String
-  Status String @default("A")
+  Status Status @default(A)
   depense Depense[]
   recette Recette[]  
 }
 model Succursale {
   id              String            @id @default(uuid())
-  code             String
-  nom             String
+  code            String
+  nom             String  @unique
   adresse         String?
   telephone       String?
   email           String?            
   utilisateurs    Utilisateur[]
   depenses        Depense[]
-  recettes         Recette[]
+  recettes        Recette[]
   clotures        Cloture[]
+  versements      Versement[]
+  caisse          Caisse[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  Status          String?            @default("A")
-
+  Status          Status            @default(A)
   @@map("succursales")
 }
-
 model Utilisateur {
   id              String            @id @default(uuid())
   email           String            @unique
@@ -110,23 +156,28 @@ model Utilisateur {
   depensesCreees  Depense[]
   recette         Recette[]
   clotures        Cloture[]
+  versement       Versement[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  Status          String            @default("A") 
+  Status          Status?            @default(A) 
 
   @@map("utilisateurs")
 }
-model DepensePlanifiee {
-  id          String    @id @default(uuid())
-  montant     Float
-  description String?
-  jourDuMois  Int
-  succursaleId String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@map("depenses_planifiees")
+model Versement {
+  id              String @id @default(uuid())
+  dateVersement   DateTime @default(now())
+  montant         Float
+  succursaleId    String
+  succursale      Succursale @relation(fields: [succursaleId],references: [id])
+  compteId        String
+  compte          Compte @relation(fields: [compteId],references: [id])
+  utillisateurId  String
+  utilisateur     Utilisateur @relation(fields: [utillisateurId],references: [id])
+  estCloture      ClotureStatus
+  createdAt       DateTime  @default(now())
+  @@map("versements")
 }
+
 
 enum Role {
   ADMIN_GENERAL
@@ -142,5 +193,18 @@ enum ClotureStatus {
 enum Status {
   A
   D
+  B
   S
 }
+enum devise {
+  USD
+  CDF
+}
+enum typeOperation {
+  A   
+  D  
+  I 
+}
+// Approvisionnement
+//Decaissament
+//Initialisation

@@ -1,36 +1,21 @@
 "use client";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Button,
-  Input,
-  Tabs,
-  Tab,
-} from "@heroui/react";
+import { Card, CardBody, CardHeader, Button, Input } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "@/lib/store/authStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import {
-  Lock,
-  Building2,
-  User,
-  PlusCircle,
-  CheckCheck,
-  Delete,
-} from "lucide-react";
-import { Modal } from "antd";
-import { ReactEventHandler, useEffect, useState } from "react";
-import ModalUsable from "@/reusables/ModalReusable";
+import { PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import SuccursaleCard from "./SuccursaleCard";
+
 import ModalAntReusable from "@/reusables/ModalAntReusable";
 import ModalWithForm from "@/reusables/ModalWithForm";
 import { getSuccursales } from "@/services/succursale";
 import { ISuccursale } from "@/lib/types/succursale";
-import SuccursaleCard from "./SuccursaleCard";
-
+import { useAuthStore } from "@/lib/store/authStore";
+import { IUtilisateur } from "@/lib/types/utilisateur";
 
 const profilSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -56,15 +41,16 @@ const motDePasseSchema = z
 type ProfilForm = z.infer<typeof profilSchema>;
 type MotDePasseForm = z.infer<typeof motDePasseSchema>;
 
-
 let formAdd = {};
-export default function Succursale() {
+
+export default function Succursale({ profil }: { profil: IUtilisateur }) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   //  Pour Modal
   const [modalAdd, setModalAdd] = useState(false);
   const [modalAntAdd, setModalAntAdd] = useState<Date | null>(null);
+
   useEffect(() => {
     setModalAdd(!modalAdd);
     setModalAntAdd(modalAntAdd == null ? null : new Date());
@@ -75,12 +61,14 @@ export default function Succursale() {
     queryKey: ["succursale", utilisateur?.succursaleId],
     queryFn: async () => {
       const response = await fetch(
-        `/api/succursales/${utilisateur?.succursaleId}`
+        `/api/succursales/${utilisateur?.succursaleId}`,
       );
+
       if (!response.ok)
         throw new Error(
-          "Erreur lors du chargement des données de la succursale"
+          "Erreur lors du chargement des données de la succursale",
         );
+
       return response.json();
     },
     enabled: !!utilisateur?.succursaleId,
@@ -126,6 +114,7 @@ export default function Succursale() {
       }
 
       const utilisateurMisAJour = await response.json();
+
       setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
@@ -143,7 +132,7 @@ export default function Succursale() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -163,78 +152,83 @@ export default function Succursale() {
     alert("ok");
     // setModalAdd(!modalAdd)
   };
-  const listeSuccursale=useQuery({queryKey:["succursales"],queryFn:getSuccursales,refetchInterval:2000}).data as ISuccursale[]
+  const listeSuccursale = useQuery({
+    queryKey: ["succursales"],
+    queryFn: getSuccursales,
+    refetchInterval: 2000,
+  }).data as ISuccursale[];
+
   return (
     <div className="space-y-6">
       {/* <h1 className="text-2xl font-bold -mt-7">Paramètres</h1> */}
-          <div className="text-end">
-            <Button
-              color="primary"
-              size="sm"
-              startContent={<PlusCircle />}
-              onPress={() => setModalAdd(!modalAdd)}
-              // onPress={() => {setModalAntAdd(new Date())}}
-            >
-              Nouvelle Succussale
-            </Button>
-          </div>
+      <div className="text-end">
+        <Button
+          color="primary"
+          size="sm"
+          startContent={<PlusCircle />}
+          onPress={() => setModalAdd(!modalAdd)}
+          // onPress={() => {setModalAntAdd(new Date())}}
+        >
+          Nouvelle Succussale
+        </Button>
+      </div>
 
-          <Card className="mt-4">
-            <CardHeader>
-              <h2 className="text-xl font-semibold border-b w-full">
-                Liste des succursales
-              </h2>
-            </CardHeader>
-            <CardBody>
-              <div className="grid grid-cols-3 gap-5">
-                  {
-                    listeSuccursale?.map((succursale,id)=>(
-                      <SuccursaleCard key={id} detail={succursale} />
-                    ))
-                  }
-              </div>
-            </CardBody>
-          </Card>
+      <Card className="mt-4">
+        <CardHeader className="border-b border-gray-700">
+          <h2 className="text-xl font-semibold w-full text-danger">
+            Liste des succursales
+          </h2>
+        </CardHeader>
+        <CardBody>
+          <div className="grid grid-cols-3 gap-5">
+            {listeSuccursale?.map((succursale, id) => (
+              <SuccursaleCard key={id} profil={profil} detail={succursale} />
+            ))}
+          </div>
+        </CardBody>
+      </Card>
       <div>
-        <ModalWithForm endPoint="succursales" action="POST"  titre={"Ajout succursale"} isOpened={modalAdd}>
+        <ModalWithForm
+          action="POST"
+          endPoint="succursales"
+          isOpened={modalAdd}
+          titre={"Ajout succursale"}
+        >
           <>
             <Input
-              isRequired={true}
-              name="code"
               color="primary"
+              isRequired={true}
               label="Code Succussale"
               labelPlacement="outside"
+              name="code"
             />
             <Input
-              isRequired={true}
-              name="nom"
               color="primary"
+              isRequired={true}
               label="Nom succussale"
               labelPlacement="outside"
+              name="nom"
             />
-             <Input
-              name="adresse"
+            <Input
               color="primary"
               label="Adresse Succussale"
               labelPlacement="outside"
+              name="adresse"
             />
             <div className="flex justify-between gap-3">
-
-            <Input
-              
-              name="telephone"
-              color="primary"
-              label="Téléphone"
-              labelPlacement="outside"
+              <Input
+                color="primary"
+                label="Téléphone"
+                labelPlacement="outside"
+                name="telephone"
               />
-            <Input
-              name="email"
-              color="primary"
-              label="E-mail"
-              labelPlacement="outside"
+              <Input
+                color="primary"
+                label="E-mail"
+                labelPlacement="outside"
+                name="email"
               />
-              </div>
-            
+            </div>
           </>
         </ModalWithForm>
       </div>

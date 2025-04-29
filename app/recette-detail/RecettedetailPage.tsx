@@ -9,17 +9,25 @@ import {
   Input,
   NumberInput,
 } from "@heroui/react";
-import { Grip } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 import ModalUsable from "@/reusables/ModalReusable";
 import { IDepense } from "@/lib/types/depense";
+import { IUtilisateur } from "@/lib/types/utilisateur";
 
-const RecettedetailPage = ({ depense }: { depense: string }) => {
+const RecettedetailPage = ({
+  recette,
+  profil,
+}: {
+  profil?: IUtilisateur;
+  recette: string;
+}) => {
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState<{
     titre: string;
@@ -46,33 +54,34 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
 
   const loadData = async () => {
     setLoading(true);
-    const requete = await fetch("/api/depenses/" + depense);
+    const requete = await fetch("/api/recettes/" + recette);
     const response = (await requete.json()) as IDepense;
 
     if (!response) {
       setError(true);
+      setLoading(false);
     } else {
       setData(response);
       setLoading(false);
     }
   };
-  const deleteDepense = () => {
+  const deleteRecette = () => {
     setModalAdd(!modalAdd);
   };
   const handleCloture = () => {
     setModalAdd(!modalAdd);
     setLoading(true);
-    fetch("api/depenses/" + data?.id, {
+    fetch("api/recettes/" + data?.id, {
       method: "PUT",
       body: JSON.stringify({ action: "cloture" }),
     })
       .then((response) => response.json())
       .then(() => {
         toast("Bien cloturé", { theme: "dark", type: "success" });
-        router.back();
+        router.push("/entrees");
       })
       .catch((er) => {
-        console.log(er);
+        toast("Echec de cloture", { theme: "dark", type: "error" });
       })
       .finally(() => {
         setModalAdd(!modalAdd);
@@ -82,13 +91,14 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
   const handleDelete = () => {
     setModalAdd(!modalAdd);
     setLoading(true);
-    fetch("/api/depenses", {
+    fetch("/api/recettes", {
       method: "DELETE",
       body: JSON.stringify({ id: data?.id }),
     })
       .then((response) => response.json())
       .then((result) => {
         toast("Bien supprimé", { type: "success" });
+        router.push("/entrees");
       })
       .catch((err) => {
         toast("Echec de suppression", { theme: "dark", type: "error" });
@@ -107,15 +117,21 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
     <div>
       <Spin spinning={loading}>
         {error && (
-          <Alert className="w-full mb-5" color="danger" variant="bordered">
-            {" "}
-            Une erreur s'est produite
+          <Alert
+            className="w-full mb-5 before:bg-danger rounded-sm border-l-8"
+            color="danger"
+            variant="bordered"
+          >
+            {"Une erreur s'est produite pendant la connexion vers le serveur"}
           </Alert>
         )}
         <Card>
           <CardHeader className="border-b border-gray-700">
             <h1 className="text-primary text-xl mb-3 flex gap-3 items-center">
-              <Grip /> Detail dépense
+              <Link href={"/entrees"}>
+                <ArrowLeft />
+              </Link>{" "}
+              Detail recette
             </h1>
           </CardHeader>
           <CardBody className="flex flex-col gap-5">
@@ -127,7 +143,7 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
                 type="date"
               />
               <Input
-                label="Date"
+                label="Rubrique"
                 labelPlacement="outside-left"
                 type="text"
                 value={data?.rubrique?.libelle}
@@ -143,11 +159,6 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
             </div>
             <div className="grid grid-cols-3">
               <Input
-                label="Beneficiare"
-                labelPlacement="outside-left"
-                value={data?.beneficiaire}
-              />
-              <Input
                 label="Succursale"
                 labelPlacement="outside-left"
                 value={data?.succursale?.nom}
@@ -158,11 +169,14 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
             <div className="w-full border-t border-gray-700 py-3 flex flex-row items-center justify-center gap-3">
               <Button
                 color={data?.estCloturee === "OG" ? "default" : "primary"}
-                disabled={data?.estCloturee === "OG" && true}
+                disabled={
+                  (data?.estCloturee === "OG" || data?.estCloturee === "OL") &&
+                  true
+                }
                 onPress={() => {
                   setAction({
                     titre: "Cloture",
-                    text: "Voulez-vous vraiment cloturer cette depense ?",
+                    text: "Voulez-vous vraiment cloturer cette recette ?",
                     clb: "Cloture",
                   });
                   setModalAdd(!modalAdd);
@@ -173,6 +187,10 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
               <Button color="primary">Modifier</Button>
               <Button
                 color="danger"
+                disabled={
+                  (data?.estCloturee === "OG" || data?.estCloturee === "OL") &&
+                  true
+                }
                 onPress={() => {
                   setAction({
                     titre: "Suppression",
@@ -181,7 +199,6 @@ const RecettedetailPage = ({ depense }: { depense: string }) => {
                   });
                   setModalAdd(!modalAdd);
                 }}
-                disabled={data?.estCloturee === "OG" && true}
               >
                 Supprimer
               </Button>

@@ -21,18 +21,12 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/react";
-import { LogOut, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  SearchIcon,
-  Logo,
-} from "@/components/icons";
+import { GithubIcon, SearchIcon, Logo } from "@/components/icons";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export const Navbar = () => {
@@ -60,8 +54,20 @@ export const Navbar = () => {
   );
 
   const handleLogout = () => {
-    logout();
-    router.push("/login");
+    fetch("/api/auth/deconnexion/")
+      .then((r) => r.json())
+      .then((r) => {
+        window.location.href = "/login";
+      })
+      .catch((err) => {
+        toast("Echec de deconnexion, veuillez reesayer plutard", {
+          theme: "dark",
+          type: "error",
+        });
+      })
+      .finally(() => {});
+    // logout();
+    // router.push("/login");
   };
 
   return (
@@ -81,7 +87,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
                 )}
                 color="foreground"
                 href={item.href}
@@ -100,10 +106,10 @@ export const Navbar = () => {
               isBordered
               as="button"
               className="transition-transform"
-              color="secondary"
+              color="default"
               name="Jason Hughes"
               size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              src="/avatar-user.png"
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -111,25 +117,21 @@ export const Navbar = () => {
               <p className="font-semibold">connecté comme:</p>
               <p className="font-semibold">{utilisateur?.nom}</p>
             </DropdownItem>
-            <DropdownItem key="settings">My Settings</DropdownItem>
-            <DropdownItem key="team_settings">Team Settings</DropdownItem>
-            <DropdownItem key="analytics">Analytics</DropdownItem>
-            <DropdownItem key="system">System</DropdownItem>
-            <DropdownItem key="configurations">Configurations</DropdownItem>
-            <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+            <DropdownItem key="settings">Mon profil</DropdownItem>
+            <DropdownItem key="team_settings">Mon journal</DropdownItem>
             <DropdownItem key="logout" color="danger" onPress={handleLogout}>
               Deconnexion
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+      {/* <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <Link isExternal aria-label="Github" href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>
         <ThemeSwitch />
         <NavbarMenuToggle />
-      </NavbarContent>
+      </NavbarContent> */}
 
       <NavbarMenu>
         {searchInput}

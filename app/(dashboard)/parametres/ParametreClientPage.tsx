@@ -7,30 +7,25 @@ import {
   Input,
   Tabs,
   Tab,
+  Alert,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "@/lib/store/authStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import {
-  Lock,
-  Building2,
-  User,
-  PlusCircle,
-  CheckCheck,
-  Delete,
-} from "lucide-react";
-import { Modal } from "antd";
-import { ReactEventHandler, useEffect, useState } from "react";
-import Succussale from "./components/Succussale";
-import ModalUsable from "@/reusables/ModalReusable";
-import ModalAntReusable from "@/reusables/ModalAntReusable";
-import ModalWithForm from "@/reusables/ModalWithForm";
+import { Lock, Building2, User, BuildingIcon, ChartBarBig } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import Rubrique from "./components/Rubrique";
 import Utilisateur from "./components/Utilisateur";
 import Succursale from "./components/Succussale";
+
+import ModalWithForm from "@/reusables/ModalWithForm";
+import ModalAntReusable from "@/reusables/ModalAntReusable";
+import { useAuthStore } from "@/lib/store/authStore";
+import { IUtilisateur } from "@/lib/types/utilisateur";
+import Banque from "./components/Banque";
 
 const profilSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -64,13 +59,19 @@ interface Succursale {
   email: string;
 }
 let formAdd = {};
-export default function ParametreClientPage() {
+
+export default function ParametreClientPage({
+  profil,
+}: {
+  profil: IUtilisateur;
+}) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   //  Pour Modal
   const [modalAdd, setModalAdd] = useState(false);
   const [modalAntAdd, setModalAntAdd] = useState<Date | null>(null);
+
   useEffect(() => {
     setModalAdd(!modalAdd);
     setModalAntAdd(modalAntAdd == null ? null : new Date());
@@ -83,10 +84,12 @@ export default function ParametreClientPage() {
       const response = await fetch(
         `/api/succursales/${utilisateur?.succursaleId}`
       );
+
       if (!response.ok)
         throw new Error(
           "Erreur lors du chargement des données de la succursale"
         );
+
       return response.json();
     },
     enabled: !!utilisateur?.succursaleId,
@@ -132,6 +135,7 @@ export default function ParametreClientPage() {
       }
 
       const utilisateurMisAJour = await response.json();
+
       setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
@@ -170,11 +174,28 @@ export default function ParametreClientPage() {
     // setModalAdd(!modalAdd)
   };
 
+  if (profil.role == "UTILISATEUR") {
+    return (
+      <Alert color="danger" variant="solid">
+        {"Desolé,Vous n'avez pas accès sur cette page"}
+      </Alert>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold -mt-7">Paramètres</h1>
+      <Card>
+        <CardBody className="p-3">
+          <div className="flex justify-between items-center p-3">
+            <h1 className="text-2xl font-bold">Paramètres</h1>
+            <span className="text-danger text-sm">
+              Login : {profil.email}, Role:{profil.role}
+            </span>
+          </div>
+        </CardBody>
+      </Card>
 
-      <Tabs aria-label="Options">
+      <Tabs aria-label="Options" color="primary">
         <Tab
           key="profil"
           title={
@@ -184,7 +205,7 @@ export default function ParametreClientPage() {
             </div>
           }
         >
-          <Utilisateur />
+          <Utilisateur profil={profil} />
         </Tab>
 
         <Tab
@@ -197,40 +218,40 @@ export default function ParametreClientPage() {
           }
         >
           <Card className="mt-4">
-            <CardHeader>
+            <CardHeader className="border-b border-gray-700">
               <h2 className="text-xl font-semibold">
                 Modification du mot de passe
               </h2>
             </CardHeader>
             <CardBody>
               <form
-                onSubmit={handleSubmitMotDePasse(onSubmitMotDePasse)}
                 className="space-y-4"
+                onSubmit={handleSubmitMotDePasse(onSubmitMotDePasse)}
               >
                 <Input
                   {...registerMotDePasse("ancienMotDePasse")}
-                  type="password"
-                  label="Ancien mot de passe"
                   errorMessage={errorsMotDePasse.ancienMotDePasse?.message}
+                  label="Ancien mot de passe"
+                  type="password"
                 />
                 <Input
                   {...registerMotDePasse("nouveauMotDePasse")}
-                  type="password"
-                  label="Nouveau mot de passe"
                   errorMessage={errorsMotDePasse.nouveauMotDePasse?.message}
+                  label="Nouveau mot de passe"
+                  type="password"
                 />
                 <Input
                   {...registerMotDePasse("confirmationMotDePasse")}
-                  type="password"
-                  label="Confirmation du mot de passe"
                   errorMessage={
                     errorsMotDePasse.confirmationMotDePasse?.message
                   }
+                  label="Confirmation du mot de passe"
+                  type="password"
                 />
                 <Button
-                  type="submit"
                   color="primary"
                   isLoading={isSubmittingMotDePasse}
+                  type="submit"
                 >
                   Modifier le mot de passe
                 </Button>
@@ -243,12 +264,12 @@ export default function ParametreClientPage() {
           key="rubrique"
           title={
             <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
+              <ChartBarBig className="w-4 h-4" />
               <span>Rubrique</span>
             </div>
           }
         >
-            <Rubrique />
+          <Rubrique profil={profil} />
         </Tab>
         <Tab
           key="succursale"
@@ -259,49 +280,62 @@ export default function ParametreClientPage() {
             </div>
           }
         >
-         <Succursale />
+          <Succursale profil={profil} />
+        </Tab>
+        <Tab
+          key="banque"
+          title={
+            <div className="flex items-center gap-2">
+              <BuildingIcon className="w-4 h-4" />
+              <span>Comptes et banques</span>
+            </div>
+          }
+        >
+          <Banque profil={profil} />
         </Tab>
       </Tabs>
       <div>
-        <ModalWithForm endPoint="succursales" action="POST"  titre={"Ajout succursale"} isOpened={modalAdd}>
+        <ModalWithForm
+          action="POST"
+          endPoint="succursales"
+          isOpened={modalAdd}
+          titre={"Ajout succursale"}
+        >
           <>
             <Input
-              isRequired={true}
-              name="code"
               color="primary"
+              isRequired={true}
               label="Code Succussale"
               labelPlacement="outside"
+              name="code"
             />
             <Input
-              isRequired={true}
-              name="nom"
               color="primary"
+              isRequired={true}
               label="Nom succussale"
               labelPlacement="outside"
+              name="nom"
             />
-             <Input
-              name="adresse"
+            <Input
               color="primary"
               label="Adresse Succussale"
               labelPlacement="outside"
+              name="adresse"
             />
             <div className="flex justify-between gap-3">
-
-            <Input
-              
-              name="telephone"
-              color="primary"
-              label="Téléphone"
-              labelPlacement="outside"
+              <Input
+                color="primary"
+                label="Téléphone"
+                labelPlacement="outside"
+                name="telephone"
               />
-            <Input
-              name="email"
-              color="primary"
-              label="E-mail"
-              labelPlacement="outside"
+              <Input
+                color="primary"
+                label="E-mail"
+                labelPlacement="outside"
+                name="email"
               />
-              </div>
-            
+            </div>
           </>
         </ModalWithForm>
       </div>

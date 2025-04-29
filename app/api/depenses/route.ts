@@ -84,6 +84,81 @@ export async function POST(Request: NextRequest) {
       },
     });
 
+    const caisseConcerned=await prisma.caisse.findFirst({
+      where:{
+        succursaleId:succursaleId,
+        devise:devise
+      }
+    })
+
+    if(devise=="CDF")
+    {
+      await prisma.caisse.upsert({
+        update:{
+          montant:{
+            decrement:Number(montant)
+          }
+        },
+        create:{
+          succursaleId:succursaleId,
+          montant:Number(montant),
+          devise:"CDF"
+        },
+        where:{
+          id:caisseConcerned?.id
+        }
+      })
+      await prisma.caisse.upsert({
+        update:{
+          montant:{
+            decrement:0
+          }
+        },
+        create:{
+          succursaleId:succursaleId,
+          montant:0,
+          devise:"USD"
+        },
+        where:{
+          id:caisseConcerned?.id
+        }
+      })
+    }else
+    {
+      await prisma.caisse.upsert({
+        update:{
+          montant:{
+            decrement:Number(montant)
+          }
+        },
+        create:{
+          succursaleId:succursaleId,
+          montant:Number(montant),
+          devise:"USD"
+        },
+        where:{
+          id:caisseConcerned?.id
+        }
+      })
+      await prisma.caisse.upsert({
+        update:{
+          montant:{
+            decrement:0
+          }
+        },
+        create:{
+          succursaleId:succursaleId,
+          montant:0,
+          devise:"CDF"
+        },
+        where:{
+          id:caisseConcerned?.id
+        }
+      })
+    }
+    
+   
+    
     return NextResponse.json(depenseNew, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.toString() }, { status: 501 });

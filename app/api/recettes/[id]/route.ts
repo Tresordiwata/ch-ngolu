@@ -1,50 +1,58 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+import { prisma } from "@/lib/prisma";
+
+export async function GET(Request: NextRequest, { params }: { params: any }) {
   try {
-    const body = await request.json();
-    const { montant, description, typeEntreeId } = body;
-
-    const entree = await prisma.entree.update({
+    const id = await params?.id;
+    const findRecette = await prisma.recette.findUnique({
       where: {
-        id: params.id,
-      },
-      data: {
-        montant,
-        description,
-        typeEntreeId,
+        id: id,
       },
       include: {
-        typeEntree: true,
-        utilisateur: {
-          select: {
-            nom: true,
-            prenom: true,
-          },
-        },
+        rubrique: true,
+        succursale: true,
+        utilisateur: true,
       },
     });
 
-    return NextResponse.json(entree);
+    return NextResponse.json(findRecette, { status: 201 });
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'entrée:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la mise à jour de l\'entrée' },
-      { status: 500 }
-    );
+    return NextResponse.json({}, { status: 501 });
+  }
+}
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const body = await request.json();
+    const { action } = body;
+    let entree = {};
+
+    if (action === "cloture") {
+      entree = await prisma.recette.update({
+        data: {
+          estCloturee: "OL",
+        },
+        where: {
+          id: params.id,
+        },
+      });
+    }
+
+    return NextResponse.json(entree);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.toString() }, { status: 501 });
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
-    await prisma.entree.delete({
+    await prisma.recette.delete({
       where: {
         id: params.id,
       },
@@ -52,10 +60,11 @@ export async function DELETE(
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'entrée:', error);
+    console.error("Erreur lors de la suppression de l'entrée:", error);
+
     return NextResponse.json(
-      { error: 'Erreur lors de la suppression de l\'entrée' },
-      { status: 500 }
+      { error: "Erreur lors de la suppression de l'entrée" },
+      { status: 500 },
     );
   }
 }

@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "CH-NGOLU :: Application Finance",
+  description: "Application de Gestion Financiere du CH-NGOLU",
   navItems: [
     {
       label: "Depense",
@@ -13,8 +13,12 @@ export const siteConfig = {
       href: "/entrees",
     },
     {
+      label: "Finance",
+      href: "/finance",
+    },
+    {
       label: "Reports",
-      href: "/pricing",
+      href: "/reporting",
     },
     {
       label: "Parametres",
@@ -23,32 +27,28 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Tableau de Bord",
+      href: "/dashbord",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Depense",
+      href: "/recette",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Recette",
+      href: "/entrees",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "Finance",
+      href: "/entrees",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
+      label: "Reports",
+      href: "/reporting",
     },
     {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
+      label: "Parametres",
+      href: "/parametre",
     },
     {
       label: "Logout",
@@ -56,10 +56,10 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/heroui-inc/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "#",
+    twitter: "#",
+    docs: "#",
+    discord: "#",
+    sponsor: "#",
   },
 };

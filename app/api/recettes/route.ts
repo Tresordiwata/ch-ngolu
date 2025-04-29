@@ -81,6 +81,24 @@ export async function POST(Request: NextRequest) {
       },
     });
 
+    const caisseConcerned = await prisma.caisse.findFirst({
+      where: {
+        succursaleId: succursaleId,
+        devise: devise,
+      },
+    });
+
+    await prisma.caisse.update({
+      data: {
+        montant: {
+          increment: Number(montant),
+        },
+      },
+      where: {
+        id: caisseConcerned?.id,
+      },
+    });
+
     return NextResponse.json(recetteNew, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.toString() }, { status: 501 });
@@ -92,8 +110,8 @@ export async function PUT(Request: NextRequest) {
 
   try {
     return NextResponse.json({}, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({}, { status: 501 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.toString() }, { status: 501 });
   }
 }
 
@@ -101,8 +119,17 @@ export async function DELETE(Request: NextRequest) {
   const { id } = await Request.json();
 
   try {
-    return NextResponse.json({ id: id }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({}, { status: 501 });
+    const recette = await prisma.recette.update({
+      data: {
+        status: "D",
+      },
+      where: {
+        id: id,
+      },
+    });
+
+    return NextResponse.json(recette, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ erro: error.toString() }, { status: 501 });
   }
 }

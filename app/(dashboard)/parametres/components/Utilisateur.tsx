@@ -5,8 +5,6 @@ import {
   CardHeader,
   Button,
   Input,
-  Tabs,
-  Tab,
   Select,
   SelectItem,
   Table,
@@ -17,32 +15,15 @@ import {
   TableCell,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "@/lib/store/authStore";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import {
-  Lock,
-  Building2,
-  User,
-  PlusCircle,
-  CheckCheck,
-  Delete,
-  Trash,
-  Trash2,
-  Edit2,
-  User2,
-  Loader2,
-} from "lucide-react";
-import { Modal, Spin } from "antd";
-import { ReactEventHandler, useEffect, useState } from "react";
-import Succussale from "./components/Succussale";
-import ModalUsable from "@/reusables/ModalReusable";
+import { PlusCircle, Trash2, Edit2, User2, Loader2, User } from "lucide-react";
+import { Spin } from "antd";
+import { useEffect, useState } from "react";
+
+import { useAuthStore } from "@/lib/store/authStore";
 import ModalAntReusable from "@/reusables/ModalAntReusable";
 import ModalWithForm from "@/reusables/ModalWithForm";
-import { getRubriques } from "@/services/rubriques";
-import { IRubrique } from "@/lib/types/rubrique";
 import { IUtilisateur } from "@/lib/types/utilisateur";
 import { getSuccursales } from "@/services/succursale";
 import { ISuccursale } from "@/lib/types/succursale";
@@ -76,16 +57,16 @@ let formAdd = {};
 
 let idSelected = {};
 
-export default function Utilisateur() {
+export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
   const [spinning, setSpinning] = useState(false);
   const [spinglobal, setSpinglobal] = useState(false);
-  const [utilisateurs,setUtilisateurs]=useState<IUtilisateur[]>([])
-  const [succursales,setSuccursales]=useState<ISuccursale[]>([])
+  const [succursales, setSuccursales] = useState<ISuccursale[]>([]);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   //  Pour Modal
   const [modalAdd, setModalAdd] = useState(false);
   const [modalAntAdd, setModalAntAdd] = useState<Date | null>(null);
+
   useEffect(() => {
     setModalAdd(!modalAdd);
     setModalAntAdd(modalAntAdd == null ? null : new Date());
@@ -107,6 +88,7 @@ export default function Utilisateur() {
       }
 
       const utilisateurMisAJour = await response.json();
+
       setAuth(utilisateurMisAJour, utilisateur?.token || "");
       toast.success("Profil mis à jour avec succès");
     } catch (error) {
@@ -124,7 +106,7 @@ export default function Utilisateur() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -144,6 +126,7 @@ export default function Utilisateur() {
       method: "DELETE",
       body: JSON.stringify({ id: idSelected }),
     });
+
     if (requete) {
       toast("Bien supprimé", { theme: "dark", type: "success" });
       setSpinning(false);
@@ -154,209 +137,213 @@ export default function Utilisateur() {
       });
     }
   };
-  const handleOkHeroUiModal = () => {
-    alert("ok");
-    // setModalAdd(!modalAdd)
-  };
-  const checkDataBeforFecth=(data:any)=>{
-    if(data?.password!==data?.password2)
-    {
-      return toast("Les 2 mot de passes ne correspondent pas",{theme:"dark", type:"error"})
-    }else{
-      setSpinglobal(true)
-      setModalAdd(false)
-      fetch("/api/utilisateurs",{method:'POST',body:JSON.stringify(data)}).then(r=>r.json())
-      .then(response=>{
-        console.log(response);
-        alert("test")
-        if(response){
-          toast("Utilisateur bien enregistré",{type:"success", theme:"dark"});
-        }
-      }).catch(error=>{
-
-      }).finally(()=>{
-        setSpinglobal(false)
-      })
+  const checkDataBeforFecth = (data: any) => {
+    if (data?.password !== data?.password2) {
+      return toast("Les 2 mot de passes ne correspondent pas", {
+        theme: "dark",
+        type: "error",
+      });
+    } else {
+      setModalAdd(!modalAdd);
+      setSpinglobal(true);
+      fetch("/api/utilisateurs", { method: "POST", body: JSON.stringify(data) })
+        .then((r) => r.json())
+        .then((response) => {
+          if (response) {
+            toast("Utilisateur bien enregistré", {
+              type: "success",
+              theme: "dark",
+            });
+          }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          setSpinglobal(false);
+        });
     }
-    
-  }
+  };
 
-  getSuccursales().then(r=>setSuccursales(r))
+  getSuccursales().then((r) => setSuccursales(r));
 
-  const ut=useQuery({queryKey:["utilisateurs"],queryFn:getUtilisateurs}).data as IUtilisateur[]
+  const ut = useQuery({ queryKey: ["utilisateurs"], queryFn: getUtilisateurs })
+    .data as IUtilisateur[];
 
   return (
     <div className="space-y-6">
-      <Spin spinning={spinglobal} indicator={<Loader2 className="animate-spin" />}>
-      <div className="text-end">
-        <Button
-          color="primary"
-          size="sm"
-          startContent={<PlusCircle />}
-          onPress={() => setModalAdd(!modalAdd)}
-          // onPress={() => {setModalAntAdd(new Date())}}
-        >
-          Nouvel utilisateur
-        </Button>
-      </div>
+      <Spin
+        indicator={<Loader2 className="animate-spin" />}
+        spinning={spinglobal}
+      >
+        <div className="text-end">
+          <Button
+            color="primary"
+            size="sm"
+            startContent={<PlusCircle />}
+            onPress={() => setModalAdd(!modalAdd)}
+            // onPress={() => {setModalAntAdd(new Date())}}
+          >
+            Nouvel utilisateur
+          </Button>
+        </div>
 
-      <Card className="mt-4">
-        <CardHeader className="border-b border-gray-800">
-          <h2 className="flex items-center gap-3 text-xl font-semibold ">
-            <User2 /> Tous les utilisateurs
-          </h2>
-        </CardHeader>
-        <CardBody>
-          <div className="space-y-4">
-            <Select
-              label="Selectionner Succursale"
-              labelPlacement="outside"
-              className="max-w-md"
-            >
-              <SelectItem></SelectItem>
-            </Select>
-            <Spin spinning={spinning}>
-              <Table color="warning">
-                <TableHeader>
-                  <TableColumn>Succursale</TableColumn>
-                  <TableColumn>Nom</TableColumn>
-                  <TableColumn>Login</TableColumn>
-                  <TableColumn>Role</TableColumn>
-                  <TableColumn>Action</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {ut?.map((utilisateur, i) => (
+        <Card className="mt-4">
+          <CardHeader className="border-b border-gray-800">
+            <h2 className="flex items-center gap-3 text-xl font-semibold text-danger">
+            <User className="w-7 h-7" /> Tous les utilisateurs
+            </h2>
+          </CardHeader>
+          <CardBody>
+            <div className="space-y-4">
+              <Select
+                className="max-w-md"
+                label="Selectionner Succursale"
+                labelPlacement="outside"
+              >
+                <SelectItem />
+              </Select>
+              <Spin spinning={spinning}>
+                <Table color="warning">
+                  <TableHeader>
+                    <TableColumn>Succursale</TableColumn>
+                    <TableColumn>Nom</TableColumn>
+                    <TableColumn>Login</TableColumn>
+                    <TableColumn>Role</TableColumn>
+                    <TableColumn>Action</TableColumn>
+                  </TableHeader>
+                  <TableBody>
+                    {ut?.map((utilisateur, i) => (
                       <TableRow key={i}>
-                        <TableCell>
-                          {utilisateur?.succursale?.nom}
-                        </TableCell>
-                        <TableCell>
-                          {utilisateur?.nom}
-                        </TableCell>
-                        <TableCell>
-                          {utilisateur?.email}
-                        </TableCell>
-                        <TableCell>
-                          {utilisateur?.role}
-                        </TableCell>
+                        <TableCell>{utilisateur?.succursale?.nom}</TableCell>
+                        <TableCell>{utilisateur?.nom}</TableCell>
+                        <TableCell>{utilisateur?.email}</TableCell>
+                        <TableCell>{utilisateur?.role}</TableCell>
                         <TableCell className="flex items-center justify-center gap-4">
                           <Button
+                            isIconOnly={true}
+                            size="sm"
+                            startContent={<Edit2 size={12} />}
+                            title="Modifier"
                             type="button"
                             variant="shadow"
-                            size="sm"
-                            title="Modifier"
-                            isIconOnly={true}
-                            startContent={<Edit2 size={12} />}
-                          ></Button>
+                          />
                           <Button
+                            isIconOnly={true}
+                            size="sm"
+                            startContent={<Trash2 size={12} />}
+                            title="Supprimer"
                             type="button"
                             variant="flat"
-                            title="Supprimer"
-                            isIconOnly={true}
                             onPress={() => {
                               idSelected = utilisateur.id;
                               setModalAntAdd(new Date());
                             }}
-                            size="sm"
-                            startContent={<Trash2 size={12} />}
-                          ></Button>
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
-                </TableBody>
-              </Table>
-            </Spin>
-          </div>
-        </CardBody>
-      </Card>
-
-      <div>
-        <ModalWithForm
-          endPoint="utilisateur"
-          action="POST"
-          titre={
-            <div className="flex items-center gap-4">
-              <User2 size={17} />
-              Ajout utilisateur
+                  </TableBody>
+                </Table>
+              </Spin>
             </div>
-          }
-          isOpened={modalAdd}
-          beforeSubmitFn={checkDataBeforFecth}
+          </CardBody>
+        </Card>
+
+        <div>
+          <ModalWithForm
+            action="POST"
+            beforeSubmitFn={checkDataBeforFecth}
+            endPoint="utilisateur"
+            isOpened={modalAdd}
+            titre={
+              <div className="flex items-center gap-4">
+                <User2 size={17} />
+                Ajout utilisateur
+              </div>
+            }
+          >
+            <>
+              <Select
+                isRequired
+                className=""
+                label="Succursale"
+                labelPlacement={"outside"}
+                name="succursale"
+              >
+                {succursales
+                  ?.filter((succursale) => {
+                    return (
+                      succursale.id === profil?.succursaleId ||
+                      profil?.role === "ADMIN_GENERAL"
+                    );
+                  })
+                  ?.map((succursale, i) => (
+                    <SelectItem key={succursale.id}>
+                      {succursale.nom?.toUpperCase()}
+                    </SelectItem>
+                  ))}
+              </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  color="primary"
+                  isRequired={true}
+                  label="Nom"
+                  labelPlacement="outside"
+                  name="nom"
+                />
+                <Input
+                  color="primary"
+                  isRequired={true}
+                  label="Prenom"
+                  labelPlacement="outside"
+                  name="prenom"
+                />
+              </div>
+              <Select
+                className=""
+                label="Role"
+                labelPlacement={"outside"}
+                name="role"
+              >
+                {profil?.role === "ADMIN_GENERAL" ? (
+                  <SelectItem key={"ADMIN_GENERAL"}>ADMIN_GENERAL</SelectItem>
+                ) : null}
+                <SelectItem key={"ADMIN_SUCCURSALE"}>ADMIN SUCC</SelectItem>
+                <SelectItem key={"UTILISATEUR"}>UTILISATEUR</SelectItem>
+              </Select>
+              <Input
+                color="primary"
+                isRequired={true}
+                label="Login"
+                labelPlacement="outside"
+                name="login"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  color="primary"
+                  isRequired={true}
+                  label="Mot de passe"
+                  labelPlacement="outside"
+                  name="password"
+                />
+                <Input
+                  color="primary"
+                  isRequired={true}
+                  label="Retaper mot de passe"
+                  labelPlacement="outside"
+                  name="password2"
+                />
+              </div>
+            </>
+          </ModalWithForm>
+        </div>
+
+        <ModalAntReusable
+          isOpened={modalAntAdd}
+          titre="Suppression"
+          onOk={handleOkAnt}
         >
-          <>
-            <Select
-              isRequired
-              name="succursale"
-              className=""
-              label="Succursale"
-              labelPlacement={"outside"}
-            >
-              {
-                succursales?.map((succursale,i)=>(
-                  <SelectItem key={succursale.id}>{succursale.nom?.toUpperCase()}</SelectItem>
-                ))
-              }
-            </Select>
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                isRequired={true}
-                name="nom"
-                color="primary"
-                label="Nom"
-                labelPlacement="outside"
-              />
-              <Input
-                isRequired={true}
-                name="prenom"
-                color="primary"
-                label="Prenom"
-                labelPlacement="outside"
-              />
-            </div>
-            <Select
-              name="role"
-              className=""
-              label="Role"
-              labelPlacement={"outside"}
-            >
-              <SelectItem key={"ADMIN_GENERAL"}>ADMIN_GENERAL</SelectItem>
-              <SelectItem key={"ADMIN_SUCCURSALE"}>ADMIN SUCC</SelectItem>
-              <SelectItem key={"UTILISATEUR"}>UTILISATEUR</SelectItem>
-            </Select>
-            <Input
-              isRequired={true}
-              name="login"
-              color="primary"
-              label="Login"
-              labelPlacement="outside"
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                isRequired={true}
-                name="password"
-                color="primary"
-                label="Mot de passe"
-                labelPlacement="outside"
-              />
-              <Input
-                isRequired={true}
-                name="password2"
-                color="primary"
-                label="Retaper mot de passe"
-                labelPlacement="outside"
-              />
-            </div>
-          </>
-        </ModalWithForm>
-      </div>
-
-      <ModalAntReusable
-        isOpened={modalAntAdd}
-        titre="Suppression"
-        onOk={handleOkAnt}
-      >
-        <div>Voulez-vous supprimer</div>
-      </ModalAntReusable>
+          <div>Voulez-vous supprimer</div>
+        </ModalAntReusable>
       </Spin>
     </div>
   );

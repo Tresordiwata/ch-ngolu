@@ -9,17 +9,25 @@ import {
   Input,
   NumberInput,
 } from "@heroui/react";
-import { Grip } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 import ModalUsable from "@/reusables/ModalReusable";
 import { IDepense } from "@/lib/types/depense";
+import { IUtilisateur } from "@/lib/types/utilisateur";
 
-const DepensedetailPage = ({ depense }: { depense: string }) => {
+const DepensedetailPage = ({
+  depense,
+  profil,
+}: {
+  depense: string;
+  profil: IUtilisateur;
+}) => {
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState<{
     titre: string;
@@ -69,7 +77,7 @@ const DepensedetailPage = ({ depense }: { depense: string }) => {
       .then((response) => response.json())
       .then(() => {
         toast("Bien cloturé", { theme: "dark", type: "success" });
-        router.back();
+        router.push("/depenses");
       })
       .catch((er) => {
         console.log(er);
@@ -115,7 +123,10 @@ const DepensedetailPage = ({ depense }: { depense: string }) => {
         <Card>
           <CardHeader className="border-b border-gray-700">
             <h1 className="text-primary text-xl mb-3 flex gap-3 items-center">
-              <Grip /> Detail dépense
+              <Link href={"/depenses"}>
+                <ArrowLeft />
+              </Link>{" "}
+              Detail dépense
             </h1>
           </CardHeader>
           <CardBody className="flex flex-col gap-5">
@@ -156,23 +167,42 @@ const DepensedetailPage = ({ depense }: { depense: string }) => {
           </CardBody>
           <CardFooter>
             <div className="w-full border-t border-gray-700 py-3 flex flex-row items-center justify-center gap-3">
+              {profil.role !== "UTILISATEUR" && (
+                <Button
+                  color={data?.estCloturee === "OG" ? "default" : "primary"}
+                  disabled={
+                    (data?.estCloturee === "OG" ||
+                      data?.estCloturee === "OL") &&
+                    true
+                  }
+                  onPress={() => {
+                    setAction({
+                      titre: "Cloture",
+                      text: "Voulez-vous vraiment cloturer cette depense ?",
+                      clb: "Cloture",
+                    });
+                    setModalAdd(!modalAdd);
+                  }}
+                >
+                  Cloturer
+                </Button>
+              )}
               <Button
-                color={data?.estCloturee === "OG" ? "default" : "primary"}
-                disabled={data?.estCloturee === "OG" && true}
-                onPress={() => {
-                  setAction({
-                    titre: "Cloture",
-                    text: "Voulez-vous vraiment cloturer cette depense ?",
-                    clb: "Cloture",
-                  });
-                  setModalAdd(!modalAdd);
-                }}
+                color="primary"
+                disabled={
+                  (data?.estCloturee === "OG" || data?.estCloturee === "OL") &&
+                  true
+                }
               >
-                Cloturer
+                Modifier
               </Button>
-              <Button color="primary">Modifier</Button>
+
               <Button
                 color="danger"
+                disabled={
+                  (data?.estCloturee === "OG" || data?.estCloturee === "OL") &&
+                  true
+                }
                 onPress={() => {
                   setAction({
                     titre: "Suppression",
@@ -181,7 +211,6 @@ const DepensedetailPage = ({ depense }: { depense: string }) => {
                   });
                   setModalAdd(!modalAdd);
                 }}
-                disabled={data?.estCloturee === "OG" && true}
               >
                 Supprimer
               </Button>

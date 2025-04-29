@@ -100,7 +100,7 @@ export default function ModalWithForm({
                   {children}
                   </div>
                   <div>&nbsp;</div>
-                  <div className="my-4 pt-5 mt-5 gap-6 flex jusify-center flex-row w-full items-center">
+                  <div className="border-t border-gray-700 py-3 my-4 pt-5 mt-5 gap-6 flex justify-center flex-row w-full items-center">
                     <Button
                       color="primary"
                       size="sm"
@@ -119,9 +119,9 @@ export default function ModalWithForm({
                     </Button>
                   </div>
                   {confirmSubmitForm && (
-                    <div className="border rounded-md text-sm p-3 flex gap-3">
+                    <div className="bg-default/40 rounded-md items-center justify-center w-full text-sm p-3 flex gap-3">
                       Voulez-vous vraiment enregistrer ?
-                      <Button size="sm" onPress={() => confirmHandleSubmtAdd()}>
+                      <Button className="text-white" color="success" size="sm" onPress={() => confirmHandleSubmtAdd()}>
                         Confirmer
                       </Button>
                       <Button
