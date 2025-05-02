@@ -72,11 +72,11 @@ export const Navbar = () => {
   };
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar maxWidth="xl" position="sticky" className="dark:bg-emerald-800">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            {/* <Image src={"/logo.jpeg"} width={20} height={20} alt="logo" /> */}
+            <Image src={"/logo-ngolu.png"} width={50} height={50} alt="logo" />
             <p className="font-bold text-inherit">CH-NGOLU</p>
           </NextLink>
         </NavbarBrand>
@@ -98,6 +98,7 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+        <ThemeSwitch className="hidden md:block" />
       </NavbarContent>
 
       <NavbarContent as="div" justify="end">
@@ -128,13 +129,11 @@ export const Navbar = () => {
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
-      {/* <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
+      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        
         <ThemeSwitch />
         <NavbarMenuToggle />
-      </NavbarContent> */}
+      </NavbarContent>
 
       <NavbarMenu>
         {searchInput}
