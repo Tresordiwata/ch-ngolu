@@ -88,7 +88,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
                 color="foreground"
                 href={item.href}
@@ -118,7 +118,9 @@ export const Navbar = () => {
               <p className="font-semibold">connecté comme:</p>
               <p className="font-semibold">{utilisateur?.nom}</p>
             </DropdownItem>
-            <DropdownItem key="settings">Mon profil</DropdownItem>
+            <DropdownItem key="settings">
+              <Link href="/account/profil">Mon profil</Link>
+            </DropdownItem>
             <DropdownItem key="team_settings">Mon journal</DropdownItem>
             <DropdownItem key="logout" color="danger" onPress={handleLogout}>
               Deconnexion

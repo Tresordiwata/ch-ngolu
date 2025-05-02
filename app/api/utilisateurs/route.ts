@@ -13,7 +13,11 @@ export async function GET(Request: NextRequest) {
 
     if (profil?.role === "ADMIN_GENERAL") {
       users = await prisma.utilisateur.findMany({
-        where: {},
+        where: {
+          NOT:{
+            Status:"D"
+          }
+        },
         include: {
           succursale: true,
         },
@@ -24,6 +28,9 @@ export async function GET(Request: NextRequest) {
     } else {
       users = await prisma.utilisateur.findMany({
         where: {
+          NOT:{
+            Status:"D"
+          },
           succursaleId: profil.succursaleId.toString(),
         },
         include: {

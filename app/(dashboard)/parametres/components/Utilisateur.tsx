@@ -28,6 +28,7 @@ import { IUtilisateur } from "@/lib/types/utilisateur";
 import { getSuccursales } from "@/services/succursale";
 import { ISuccursale } from "@/lib/types/succursale";
 import { getUtilisateurs } from "@/services/utilisateurs";
+import ModalUsable from "@/reusables/ModalReusable";
 
 const profilSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -55,7 +56,7 @@ type MotDePasseForm = z.infer<typeof motDePasseSchema>;
 
 let formAdd = {};
 
-let idSelected = {};
+let idSelected:IUtilisateur|null;
 
 export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
   const [spinning, setSpinning] = useState(false);
@@ -65,11 +66,11 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
 
   //  Pour Modal
   const [modalAdd, setModalAdd] = useState(false);
-  const [modalAntAdd, setModalAntAdd] = useState<Date | null>(null);
+  const [modalAntAdd, setModalAntAdd] = useState<boolean>(false);
 
   useEffect(() => {
     setModalAdd(!modalAdd);
-    setModalAntAdd(modalAntAdd == null ? null : new Date());
+    setModalAntAdd(!modalAntAdd);
   }, []);
   // Fin Modal
 
@@ -120,14 +121,13 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
     }
   };
   const handleOkAnt = async () => {
-    console.log("Votre id", idSelected);
     setSpinning(true);
-    const requete = await fetch("/api/rubriques/", {
+    const requete = await fetch(`/api/utilisateurs/${idSelected?.id}`, {
       method: "DELETE",
-      body: JSON.stringify({ id: idSelected }),
     });
+    const resultat=await requete.json()
 
-    if (requete) {
+    if (resultat) {
       toast("Bien supprimé", { theme: "dark", type: "success" });
       setSpinning(false);
     } else {
@@ -165,7 +165,7 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
 
   getSuccursales().then((r) => setSuccursales(r));
 
-  const ut = useQuery({ queryKey: ["utilisateurs"], queryFn: getUtilisateurs })
+  const ut = useQuery({ queryKey: ["utilisateurs"], queryFn: getUtilisateurs,refetchInterval:2000 })
     .data as IUtilisateur[];
 
   return (
@@ -234,8 +234,8 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
                             type="button"
                             variant="flat"
                             onPress={() => {
-                              idSelected = utilisateur.id;
-                              setModalAntAdd(new Date());
+                              idSelected = utilisateur;
+                              setModalAntAdd(!modalAntAdd);
                             }}
                           />
                         </TableCell>
@@ -337,13 +337,13 @@ export default function Utilisateur({ profil }: { profil?: IUtilisateur }) {
           </ModalWithForm>
         </div>
 
-        <ModalAntReusable
+        <ModalUsable
           isOpened={modalAntAdd}
           titre="Suppression"
           onOk={handleOkAnt}
         >
           <div>Voulez-vous supprimer</div>
-        </ModalAntReusable>
+        </ModalUsable>
       </Spin>
     </div>
   );
