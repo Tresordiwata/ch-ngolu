@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(Request) {
   try {
-    const rubriques=await prisma.rubrique.findMany({
+    const rubriques=await prisma?.rubrique.findMany({
       where:{
         NOT:{
           Status:"D"

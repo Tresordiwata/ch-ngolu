@@ -17,35 +17,25 @@ import {
   TableRow,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import moment from "moment";
 
 import PageContent from "@/layouts/PageContent";
 import { getSuccursales } from "@/services/succursale";
 import { ISuccursale } from "@/lib/types/succursale";
 import { EyeIcon } from "@/styles/icones";
-import setListeDt from "../utils/getRangeOfDate";
 
 const PageClient = () => {
   const [spinning, setSpinning] = useState(false);
-  const [periode, setPeriode] = useState<{ dtStart: string; dateEnd: string }>({
-    dtStart: "",
-    dateEnd: "",
-  });
-  const [dts, setDts] = useState<string[]>([]);
-  const succursales = useQuery({
+  let succursales:ISuccursale[] = []
+ 
+  const {data,error}=useQuery({
     queryKey: ["succursales"],
     queryFn: getSuccursales,
-  }).data as ISuccursale[];
+  });
+  if(!error) succursales=data as ISuccursale[]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.currentTarget));
-    // setPeriode({
-    //   dtStart: f?.dateFrom.toString(),
-    //   dateEnd: f?.dateEnd?.toString(),
-    // });
-
-    setDts(setListeDt(f?.dateFrom.toString(), f?.dateEnd?.toString()));
 
     setSpinning(true);
     fetch("/api/reporting/finance/", {
@@ -60,10 +50,9 @@ const PageClient = () => {
       });
     // console.log(f);
   };
-  
 
   return (
-    <PageContent titre={"Reports financiers"}>
+    <PageContent titre={"Reports dépenses"}>
       <div className="flex flex-col gap-4 px-5">
         <form onSubmit={handleSubmit}>
           <Card>
@@ -76,19 +65,10 @@ const PageClient = () => {
                   name="succursale"
                 >
                   {succursales?.map((succursale, i) => (
-                    <SelectItem key={succursale.id}>
+                    <SelectItem key={succursale?.id}>
                       {succursale?.nom}
                     </SelectItem>
                   ))}
-                </Select>
-                <Select
-                  isRequired
-                  label="Type Requette"
-                  labelPlacement="outside"
-                  name="typeRubrique"
-                >
-                  <SelectItem key={"D"}>{"Depenses"}</SelectItem>
-                  <SelectItem key={"R"}>{"Recetttes"}</SelectItem>
                 </Select>
               </div>
               <div className="grid grid-cols-4 mt-4 gap-4 items-center">
@@ -138,27 +118,17 @@ const PageClient = () => {
             ) : (
               <Table border={2} color="primary">
                 <TableHeader>
-                  {dts?.length < 1 ? (
-                    <TableColumn>1</TableColumn>
-                  ) : (
-                    dts?.map((dt, index) => (
-                      <TableColumn key={index} className="bg-primary-100">
-                        {moment(`${dt}`).isValid()?moment(dt).format("DD/MM/YYY"):"Rubrique"}
-                      </TableColumn>
-                    ))
-                  )}
+                  <TableColumn className="bg-primary-100">Rubrique</TableColumn>
+                  <TableColumn className="bg-primary-100">
+                    21/02/2027
+                  </TableColumn>
+                  <TableColumn className="bg-primary-100">TOTAL</TableColumn>
                 </TableHeader>
                 <TableBody>
                   <TableRow className="border-b border-gray-700">
-                    {dts?.length < 1 ? (
-                      <TableCell>1</TableCell>
-                    ) : (
-                      dts.map((dt, index) => (
-                        <TableCell key={index} className="">
-                          {"45454"}
-                        </TableCell>
-                      ))
-                    )}
+                    <TableCell className="">45454</TableCell>
+                    <TableCell>45454</TableCell>
+                    <TableCell>10</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

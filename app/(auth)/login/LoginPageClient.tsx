@@ -8,9 +8,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@heroui/input";
+import Link from "next/link";
 
 import { useAuthStore } from "@/lib/store/authStore";
-import Link from "next/link";
 
 export default function LoginPageClient() {
   const [submitting,setSubmitting]=useState<boolean>(false)
@@ -29,9 +29,16 @@ export default function LoginPageClient() {
         },
         body: JSON.stringify(dataFormated),
       })
-        .then((r) => r.json())
+        .then((r) => {
+          if(r.status==503)
+          {
+            toast("Echec de connexion,veuillez reessayer",{position:"top-center"})
+          }else{
+            r.json()
+          }
+        })
         .then((response) => {
-          if (!response.connected) {
+          if (!response?.connected) {
             throw new Error("Identifiants invalides");
           }
           const { utilisateur, token } = response;
