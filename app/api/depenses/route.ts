@@ -31,7 +31,7 @@ export async function GET(Request: NextRequest) {
           NOT:{
             status:"D"
           }
-        }
+        },
       });
     } else {
       depenses = await prisma.depense.findMany({
@@ -59,10 +59,8 @@ export async function POST(Request: NextRequest) {
   const {
     beneficiaire,
     rubrique,
-    description,
     devise,
     dt,
-    fournisseurId,
     montant,
     utilisateur,
     succursaleId,
@@ -77,7 +75,7 @@ export async function POST(Request: NextRequest) {
         succursaleId: succursaleId,
         dateDepense: cleanedDate,
         montant: parseFloat(montant),
-        description: description,
+        description: "",
         fournisseurId: null,
         utilisateurId: utilisateur,
         rubriqueId: Number(rubrique),

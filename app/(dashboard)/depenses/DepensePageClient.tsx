@@ -26,6 +26,7 @@ import { IUtilisateur } from "@/lib/types/utilisateur";
 import { getRubriques } from "@/services/rubriques";
 import { IRubrique } from "@/lib/types/rubrique";
 import { getDepenses } from "@/services/depenses";
+import { date } from "zod";
 
 
 export default function DepensesPage({profil}:{profil:IUtilisateur}) {
@@ -257,7 +258,7 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
             </div>
             <DatePicker
             isRequired
-
+                defaultValue={now(getLocalTimeZone())}
              granularity="day"
              label="Date depense"
               labelPlacement="outside"
@@ -265,15 +266,6 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
               name="dt"
               translate="yes"
             />
-            <Select
-              className=""
-              disabled={true}
-              label="Fournisseur"
-              labelPlacement="outside"
-              name="fournisseurId"
-            >
-              <SelectItem key={null} />
-            </Select>
           </div>
 
           <div className="flex flex-row gap-3">
@@ -315,11 +307,7 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
             name="beneficiaire"
             type="text"
           />
-          <Textarea
-            label="Observation"
-            labelPlacement="outside"
-            name="description"
-           />
+          
         </div>
       </ModalWithForm>
     </div>

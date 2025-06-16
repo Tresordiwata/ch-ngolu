@@ -8,6 +8,8 @@ export async function GET(Request) {
         NOT:{
           Status:"D"
         }
+      },orderBy:{
+        libelle:"asc"
       }
     })
     return NextResponse.json(rubriques, { status: 201 });

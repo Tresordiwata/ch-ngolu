@@ -47,7 +47,7 @@ const DepensedetailPage = ({
   //  Pour Modal
   const [modalAdd, setModalAdd] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { 
     setModalAdd(!modalAdd);
   }, []);
   // Fin Modal

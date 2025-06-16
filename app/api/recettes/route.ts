@@ -59,7 +59,7 @@ export async function GET(Request: NextRequest) {
 export async function POST(Request: NextRequest) {
   const {
     rubrique,
-    description,
+    
     devise,
     dt,
     montant,
@@ -75,7 +75,7 @@ export async function POST(Request: NextRequest) {
         succursaleId: succursaleId,
         dateRecette: cleanedDate,
         montant: parseFloat(montant),
-        observation: description,
+        observation: "",
         utilisateurId: utilisateur,
         rubriqueId: Number(rubrique),
       },

@@ -8,7 +8,7 @@ const getRangeOfDates = (dtS: String, dtE: String) => {
     dates.push(currentDate.format("YYYY-MM-DD"));
     currentDate.add(1, "days"); // Ajouter un jour
   }
-  dates.unshift("Rubrique");
+  // dates.unshift("Rubrique");
 
   return dates;
 };

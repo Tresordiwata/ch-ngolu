@@ -3,14 +3,14 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@heroui/input";
+import Link from "next/link";
 
 import { useAuthStore } from "@/lib/store/authStore";
-import Link from "next/link";
 
 export default function LoginPageClient() {
   const [submitting,setSubmitting]=useState<boolean>(false)
@@ -21,6 +21,7 @@ export default function LoginPageClient() {
     data.preventDefault();
     const dataFormated = Object.fromEntries(new FormData(data.currentTarget));
 
+    setSubmitting(true)
     try {
       fetch("/api/auth/login", {
         method: "POST",
@@ -32,15 +33,18 @@ export default function LoginPageClient() {
         .then((r) => r.json())
         .then((response) => {
           if (!response.connected) {
+            toast("Erreur lors de la connexion",{type:"error",theme:"dark"})
             throw new Error("Identifiants invalides");
           }
           const { utilisateur, token } = response;
 
           setAuth(utilisateur, token);
           window.location.href="/dashboard";
+        }).finally(()=>{
+          setSubmitting(false)
         });
     } catch (err:any) {
-      toast.error("Erreur lors de la connexion");
+      toast("Erreur lors de la connexion",{type:"error",theme:"dark"});
     }
   };
 
@@ -73,6 +77,7 @@ export default function LoginPageClient() {
     //   </div>
     // </Card>
     <main className="min-h-screen w-full m-0 flex items-center justify-center ">
+      <ToastContainer />
       <div className="w-full p-8 bg-white max-w-[400px] rounded-xl shadow-xl flex flex-col justify-between">
         <div className="text-center">
           <div className="flex justify-center">

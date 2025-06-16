@@ -20,6 +20,7 @@ import Link from "next/link";
 import ModalUsable from "@/reusables/ModalReusable";
 import { IDepense } from "@/lib/types/depense";
 import { IUtilisateur } from "@/lib/types/utilisateur";
+import { IRecette } from "@/lib/types/recette";
 
 const RecettedetailPage = ({
   recette,
@@ -40,7 +41,7 @@ const RecettedetailPage = ({
   });
 
   const [error, setError] = useState(false);
-  const [data, setData] = useState<IDepense | null>(null);
+  const [data, setData] = useState<IRecette | null>(null);
 
   const router = useRouter();
 
@@ -55,7 +56,7 @@ const RecettedetailPage = ({
   const loadData = async () => {
     setLoading(true);
     const requete = await fetch("/api/recettes/" + recette);
-    const response = (await requete.json()) as IDepense;
+    const response = (await requete.json()) as IRecette;
 
     if (!response) {
       setError(true);
@@ -137,7 +138,7 @@ const RecettedetailPage = ({
           <CardBody className="flex flex-col gap-5">
             <div className="grid grid-cols-3">
               <Input
-                defaultValue={moment(data?.dateDepense).format("YYYY-MM-DD")}
+                defaultValue={moment(data?.dateRecette).format("YYYY-MM-DD")}
                 label="Date"
                 labelPlacement="outside-left"
                 type="date"

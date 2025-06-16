@@ -248,6 +248,7 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
             <DatePicker
             isRequired
              granularity="day"
+             defaultValue={now(getLocalTimeZone())}
              label="Date recette"
               labelPlacement="outside"
               lang="fr"
@@ -289,11 +290,7 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
                 ))
               }
             </Select>
-          <Textarea
-            label="Observation"
-            labelPlacement="outside"
-            name="description"
-           />
+          
         </div>
       </ModalWithForm>
     </div>

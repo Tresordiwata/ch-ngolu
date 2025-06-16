@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+
+import { initialize } from "./utils/controler";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -25,6 +28,10 @@ const queryClient = new QueryClient();
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    initialize();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

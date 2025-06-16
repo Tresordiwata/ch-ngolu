@@ -72,7 +72,7 @@ export const Navbar = () => {
   };
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" className="dark:bg-emerald-800">
+    <HeroUINavbar maxWidth="xl" position="sticky" className="dark:bg-slate-800 light:border-b-2 border-b-gray-500 shadow-md">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">

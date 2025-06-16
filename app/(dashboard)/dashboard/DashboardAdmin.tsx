@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { IDashboard } from "@/lib/types/dashboard";
 import { getDashboard } from "@/services/dashboard";
+import { useServiceStore } from "@/store/store";
 
 interface SuccursaleStats {
   totalDepenses: number;
@@ -42,8 +43,10 @@ export default function DashboardPageAdmin() {
   const [dashboardData, setDashboardData] = useState<IDashboard | undefined>();
   const [nonCloture, setNonCloture] = useState(0);
   const utilisateur = useAuthStore((state) => state.utilisateur);
+  const {rubriques}=useServiceStore()
 
-  useEffect(() => {
+  useEffect(() => {    
+
     getDashboard("M").then((r) => {
       setDashboardData(r);
       setNonCloture(

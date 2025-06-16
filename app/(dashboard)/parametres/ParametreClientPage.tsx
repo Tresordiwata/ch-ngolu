@@ -345,7 +345,7 @@ export default function ParametreClientPage({
         titre="dsjkdskd"
         onOk={handleOkAnt}
       >
-        <div>Suppression okkkk</div>
+        <div>Suppression</div>
       </ModalAntReusable>
     </div>
   );
