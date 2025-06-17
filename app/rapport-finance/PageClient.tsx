@@ -138,7 +138,7 @@ const PageClient = () => {
                     color="primary border border-gray-100 w-full"
                   >
                     <thead>
-                      <tr className="bg-primary-100">
+                      <tr className="bg-primary-100 text-sm">
                         <th className="bg-primary-100 py-3 px-2">Rubrique</th>
                         <>
                           {allDates?.map((dt, i) => (
@@ -165,7 +165,7 @@ const PageClient = () => {
                           return r.typeRubr == "D";
                         })
                         .map((rubrique, index) => (
-                          <tr key={index} className="border-b border-gray-700">
+                          <tr key={index} className="text-sm border-b border-gray-700 hover:bg-slate-600 hover:text-white">
                             <td className="py-2">{rubrique.libelle}</td>
                             <>
                               {allDates?.map((dt, i) => (
@@ -240,7 +240,7 @@ const PageClient = () => {
                 <Tab key="recette" title="Recette">
                   <table border={2} color="primary border border-gray-100">
                     <thead>
-                      <tr className="bg-primary-100">
+                      <tr className="bg-primary-100 text-sm">
                         <th className="bg-primary-100 py-3 px-2">Rubrique</th>
                         <>
                           {allDates?.map((dt, i) => (
@@ -267,7 +267,7 @@ const PageClient = () => {
                           return r.typeRubr == "R";
                         })
                         .map((rubrique, index) => (
-                          <tr key={index} className="border-b border-gray-700">
+                          <tr key={index} className="border-b border-gray-700 hover:bg-gray-700 hover:text-white">
                             <td className="py-2 px-2">{rubrique.libelle}</td>
                             <>
                               {allDates?.map((dt, i) => (
