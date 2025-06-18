@@ -22,6 +22,7 @@ import { EyeIcon } from "@/styles/icones";
 import { useServiceStore } from "@/store/store";
 import { IDepense } from "@/lib/types/depense";
 import { IRecette } from "@/lib/types/recette";
+import { Printer } from "lucide-react";
 
 const PageClient = () => {
   const [spinning, setSpinning] = useState(false);
@@ -126,6 +127,7 @@ const PageClient = () => {
         <Card>
           <CardHeader className="border-b-0 border-gray-700">
             Resultat
+            <hr />
           </CardHeader>
           <CardBody>
             {spinning ? (
@@ -133,6 +135,15 @@ const PageClient = () => {
             ) : (
               <Tabs className="w-full">
                 <Tab key="depense" className="w-full" title="Dépenses">
+                  <div className="text-center">
+                    <Button
+                      variant="flat"
+                      color="primary"
+                      startContent={<Printer />}
+                    >
+                      Imprimer dépenses{" "}
+                    </Button>
+                  </div>
                   <table
                     border={2}
                     color="primary border border-gray-100 w-full"
@@ -165,7 +176,10 @@ const PageClient = () => {
                           return r.typeRubr == "D";
                         })
                         .map((rubrique, index) => (
-                          <tr key={index} className="text-sm border-b border-gray-700 hover:bg-slate-600 hover:text-white">
+                          <tr
+                            key={index}
+                            className="text-sm border-b border-gray-700 hover:bg-slate-600 hover:text-white"
+                          >
                             <td className="py-2">{rubrique.libelle}</td>
                             <>
                               {allDates?.map((dt, i) => (
@@ -178,14 +192,14 @@ const PageClient = () => {
                                       .filter((dep) => {
                                         return (
                                           moment(dep.dateDepense).format(
-                                            "YYYY-MM-DD",
+                                            "YYYY-MM-DD"
                                           ) == dt &&
                                           dep.rubriqueId == rubrique.id
                                         );
                                       })
                                       .reduce(
                                         (prev, acc) => prev + acc.montant,
-                                        0,
+                                        0
                                       )) ||
                                     0}{" "}
                                   {devise}
@@ -199,7 +213,7 @@ const PageClient = () => {
                                     })
                                     .reduce(
                                       (prev, acc) => prev + acc.montant,
-                                      0,
+                                      0
                                     )) ||
                                   0}{" "}
                                 {devise}
@@ -217,7 +231,7 @@ const PageClient = () => {
                               .filter((dep) => {
                                 return (
                                   moment(dep.dateDepense).format(
-                                    "YYYY-MM-DD",
+                                    "YYYY-MM-DD"
                                   ) == dt
                                 );
                               })
@@ -229,7 +243,7 @@ const PageClient = () => {
                         <td className="text-center">
                           {allDepenses.reduce(
                             (prev, acc) => prev + acc.montant,
-                            0,
+                            0
                           )}{" "}
                           {devise}
                         </td>
@@ -238,6 +252,15 @@ const PageClient = () => {
                   </table>
                 </Tab>
                 <Tab key="recette" title="Recette">
+                  <div className="text-center">
+                    <Button
+                      variant="flat"
+                      color="primary"
+                      startContent={<Printer />}
+                    >
+                      Imprimer Recettes{" "}
+                    </Button>
+                  </div>
                   <table border={2} color="primary border border-gray-100">
                     <thead>
                       <tr className="bg-primary-100 text-sm">
@@ -267,7 +290,10 @@ const PageClient = () => {
                           return r.typeRubr == "R";
                         })
                         .map((rubrique, index) => (
-                          <tr key={index} className="border-b border-gray-700 hover:bg-gray-700 hover:text-white">
+                          <tr
+                            key={index}
+                            className="border-b border-gray-700 hover:bg-gray-700 hover:text-white"
+                          >
                             <td className="py-2 px-2">{rubrique.libelle}</td>
                             <>
                               {allDates?.map((dt, i) => (
@@ -280,14 +306,14 @@ const PageClient = () => {
                                       .filter((dep) => {
                                         return (
                                           moment(dep.dateRecette).format(
-                                            "YYYY-MM-DD",
+                                            "YYYY-MM-DD"
                                           ) == dt &&
                                           dep.rubriqueId == rubrique.id
                                         );
                                       })
                                       .reduce(
                                         (prev, acc) => prev + acc.montant,
-                                        0,
+                                        0
                                       )) ||
                                     0}{" "}
                                   {devise}
@@ -301,7 +327,7 @@ const PageClient = () => {
                                     })
                                     .reduce(
                                       (prev, acc) => prev + acc.montant,
-                                      0,
+                                      0
                                     )) ||
                                   0}{" "}
                                 {devise}
@@ -319,7 +345,7 @@ const PageClient = () => {
                               .filter((rec) => {
                                 return (
                                   moment(rec.dateRecette).format(
-                                    "YYYY-MM-DD",
+                                    "YYYY-MM-DD"
                                   ) == dt
                                 );
                               })
@@ -331,7 +357,7 @@ const PageClient = () => {
                         <td className="text-center px-2">
                           {allRecettes.reduce(
                             (prev, acc) => prev + acc.montant,
-                            0,
+                            0
                           )}{" "}
                           {devise}
                         </td>

@@ -9,6 +9,16 @@ const PageClient = () => {
   return (
     <LayoutSecond titre={"Reports"}>
       <div className="flex flex-col gap-4 px-10">
+      <Link  href="/rapport-finance">
+        <Button
+            color="primary"
+            fullWidth={true}
+            size="lg"
+            startContent={<FileChartPie />}
+        >
+          Rapport financier
+        </Button>
+        </Link>
         <Button
             href="/reporting/depense"
           color="danger"
@@ -34,16 +44,7 @@ const PageClient = () => {
         >
           Rapport Versements
         </Button>
-        <Link  href="/rapport-finance">
-        <Button
-            color="primary"
-            fullWidth={true}
-            size="lg"
-            startContent={<FileChartPie />}
-        >
-          Rapport financier
-        </Button>
-        </Link>
+       
       </div>
     </LayoutSecond>
   );
