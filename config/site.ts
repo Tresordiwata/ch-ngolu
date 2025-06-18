@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "CH-NGOLU :: Application Finance",
+  name: "Service Médical ADS :: Application Finance",
   description: "Application de Gestion Financiere du CH-NGOLU",
   navItems: [
     {

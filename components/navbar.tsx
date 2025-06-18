@@ -77,7 +77,7 @@ export const Navbar = () => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Image src={"/logo-ngolu.png"} width={50} height={50} alt="logo" />
-            <p className="font-bold text-inherit">CH-NGOLU</p>
+            <p className="font-bold text-inherit">Service Médical ADS</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
