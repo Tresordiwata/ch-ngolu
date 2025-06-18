@@ -14,7 +14,7 @@ import {
   DatePicker,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, FileUp, Filter, Grip } from "lucide-react";
+import { Plus, FileUp, Filter, Grip, FilePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import {now, getLocalTimeZone} from "@internationalized/date";
 import Link from "next/link";
@@ -27,6 +27,7 @@ import { getRubriques } from "@/services/rubriques";
 import { IRubrique } from "@/lib/types/rubrique";
 import { getRecettes } from "@/services/recettes";
 import { IRecette } from "@/lib/types/recette";
+import FormSimple from "@/reusables/FormSimple";
 
 
 export default function RecetteClient({profil}:{profil:IUtilisateur}) {
@@ -122,7 +123,7 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
           <Grip /> Gestion des Recettes
         </h1>
         <div className="flex gap-2">
-          <Button
+          {/* <Button
             color="primary"
             size="sm"
             startContent={<Plus />}
@@ -131,7 +132,7 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
             }}
           >
             Nouvelle Recette
-          </Button>
+          </Button> */}
           <Button color="secondary" size="sm" startContent={<FileUp />}>
             Exporter
           </Button>
@@ -140,42 +141,70 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
 
       <Card>
         <CardHeader>
-          <h3 className="text-xl font-semibold">Filtres</h3>
+          <h3 className="text-xl font-semibold flex gap-3"><FilePlus />Nouvelle Recette</h3>
         </CardHeader>
         <CardBody>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Select
-              label="Type"
+          <div className="">
+          <FormSimple
+        action="POST"
+        endPoint="recettes"
+        
+        titre="Nouvelle recette"
+      >
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-row gap-3">
+            <div className="flex flex-row gap-3">
+            <input name="utilisateur" type="hidden" value={profil?.id?.toString()} />
+            <input name="succursaleId" type="hidden" value={profil?.succursaleId?.toString()} />
+            </div>
+            <DatePicker
+            isRequired
+             granularity="day"
+             defaultValue={now(getLocalTimeZone())}
+             label="Date recette"
               labelPlacement="outside"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-            >
-              <SelectItem key="tous">
-                Tous
-              </SelectItem>
-              <SelectItem key="interne">
-                Interne
-              </SelectItem>
-              <SelectItem key="externe">
-                Externe
-              </SelectItem>
-            </Select>
-            <Select
-              label="Statut"
+              lang="fr"
+              name="dt"
+              translate="yes"
+            />
+          </div>
+
+          <div className="flex flex-row gap-3">
+            <NumberInput
+            isRequired
+              className="w-full"
+              label="Montant depense"
               labelPlacement="outside"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              name="montant"
+              type="number"
+            />
+            <Select
+            isRequired
+              className="min-w-[100px] w-fit"
+              label="Devise"
+              labelPlacement="outside"
+              name="devise"
             >
-              <SelectItem key="tous">
-                Tous
-              </SelectItem>
-              <SelectItem key="cloturees" >
-                Clôturées
-              </SelectItem>
-              <SelectItem key="non-cloturees">
-                Non Clôturées
-              </SelectItem>
+              <SelectItem key={"USD"}>USD</SelectItem>
+              <SelectItem key={"CDF"}>CDF</SelectItem>
             </Select>
+          </div>
+          <Select
+            isRequired
+              className=""
+              label="Rubrique"
+              labelPlacement="outside"
+              name="rubrique"
+            >
+              {
+                rubriqueDepense?.filter((rubrique)=>{return rubrique.typeRubr=="R"}).map(rubrique=>(
+                  <SelectItem key={rubrique.id}>{rubrique.libelle}</SelectItem>
+                ))
+              }
+            </Select>
+          
+        </div>
+      </FormSimple>
           </div>
         </CardBody>
       </Card>
@@ -233,66 +262,7 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
           </div>
         </CardBody>
       </Card>
-      <ModalWithForm
-        action="POST"
-        endPoint="recettes"
-        isOpened={modalUsableStatus}
-        titre="Nouvelle recette"
-      >
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-row gap-3">
-            <div className="flex flex-row gap-3">
-            <input name="utilisateur" type="hidden" value={profil?.id?.toString()} />
-            <input name="succursaleId" type="hidden" value={profil?.succursaleId?.toString()} />
-            </div>
-            <DatePicker
-            isRequired
-             granularity="day"
-             defaultValue={now(getLocalTimeZone())}
-             label="Date recette"
-              labelPlacement="outside"
-              lang="fr"
-              name="dt"
-              translate="yes"
-            />
-          </div>
-
-          <div className="flex flex-row gap-3">
-            <NumberInput
-            isRequired
-              className="w-full"
-              label="Montant depense"
-              labelPlacement="outside"
-              name="montant"
-              type="number"
-            />
-            <Select
-            isRequired
-              className="min-w-[100px] w-fit"
-              label="Devise"
-              labelPlacement="outside"
-              name="devise"
-            >
-              <SelectItem key={"USD"}>USD</SelectItem>
-              <SelectItem key={"CDF"}>CDF</SelectItem>
-            </Select>
-          </div>
-          <Select
-            isRequired
-              className=""
-              label="Rubrique"
-              labelPlacement="outside"
-              name="rubrique"
-            >
-              {
-                rubriqueDepense?.filter((rubrique)=>{return rubrique.typeRubr=="R"}).map(rubrique=>(
-                  <SelectItem key={rubrique.id}>{rubrique.libelle}</SelectItem>
-                ))
-              }
-            </Select>
-          
-        </div>
-      </ModalWithForm>
+      
     </div>
   );
 }

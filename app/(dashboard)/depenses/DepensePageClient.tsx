@@ -16,7 +16,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Plus, FileUp, Filter, Grip } from "lucide-react";
 import { useEffect, useState } from "react";
-import {now, getLocalTimeZone} from "@internationalized/date";
+import { now, getLocalTimeZone } from "@internationalized/date";
 import Link from "next/link";
 
 import ModalWithForm from "@/reusables/ModalWithForm";
@@ -27,89 +27,96 @@ import { getRubriques } from "@/services/rubriques";
 import { IRubrique } from "@/lib/types/rubrique";
 import { getDepenses } from "@/services/depenses";
 import { date } from "zod";
+import FormSimple from "@/reusables/FormSimple";
 
-
-export default function DepensesPage({profil}:{profil:IUtilisateur}) {
+export default function DepensesPage({ profil }: { profil: IUtilisateur }) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("tous");
   const [statusFilter, setStatusFilter] = useState("tous");
   const [modalUsableStatus, setModalUsableStatus] = useState(false);
 
-//   const { data: depenses, isLoading: depensesLoading } = useQuery<IDepense[]>({
-//     queryKey: ["depenses", utilisateur?.succursaleId],
-//     queryFn: async () => {
-//       const response = await fetch(
-//         `/api/depenses?succursaleId=${utilisateur?.succursaleId}`
-//       );
+  //   const { data: depenses, isLoading: depensesLoading } = useQuery<IDepense[]>({
+  //     queryKey: ["depenses", utilisateur?.succursaleId],
+  //     queryFn: async () => {
+  //       const response = await fetch(
+  //         `/api/depenses?succursaleId=${utilisateur?.succursaleId}`
+  //       );
 
-//       if (!response.ok)
-//         throw new Error("Erreur lors du chargement des dépenses");
+  //       if (!response.ok)
+  //         throw new Error("Erreur lors du chargement des dépenses");
 
-//       return response.json();
-//     },
-//     enabled: !!utilisateur?.succursaleId,
-//   });
+  //       return response.json();
+  //     },
+  //     enabled: !!utilisateur?.succursaleId,
+  //   });
 
-//   const { data: typesDepenseInterne } = useQuery<ITypeDepense[]>({
-//     queryKey: ["types-depense-interne"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/types-depense-interne");
+  //   const { data: typesDepenseInterne } = useQuery<ITypeDepense[]>({
+  //     queryKey: ["types-depense-interne"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/types-depense-interne");
 
-//       if (!response.ok)
-//         throw new Error(
-//           "Erreur lors du chargement des types de dépense interne"
-//         );
+  //       if (!response.ok)
+  //         throw new Error(
+  //           "Erreur lors du chargement des types de dépense interne"
+  //         );
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const { data: typesDepenseExterne } = useQuery<ITypeDepense[]>({
-//     queryKey: ["types-depense-externe"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/types-depense-externe");
+  //   const { data: typesDepenseExterne } = useQuery<ITypeDepense[]>({
+  //     queryKey: ["types-depense-externe"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/types-depense-externe");
 
-//       if (!response.ok)
-//         throw new Error(
-//           "Erreur lors du chargement des types de dépense externe"
-//         );
+  //       if (!response.ok)
+  //         throw new Error(
+  //           "Erreur lors du chargement des types de dépense externe"
+  //         );
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const { data: fournisseurs } = useQuery<IFournisseur[]>({
-//     queryKey: ["fournisseurs"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/fournisseurs");
+  //   const { data: fournisseurs } = useQuery<IFournisseur[]>({
+  //     queryKey: ["fournisseurs"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/fournisseurs");
 
-//       if (!response.ok)
-//         throw new Error("Erreur lors du chargement des fournisseurs");
+  //       if (!response.ok)
+  //         throw new Error("Erreur lors du chargement des fournisseurs");
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const filteredDepenses = depenses?.filter((depense) => {
-//     const matchesSearch =
-//       depense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       depense.montant.toString().includes(searchTerm);
+  //   const filteredDepenses = depenses?.filter((depense) => {
+  //     const matchesSearch =
+  //       depense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       depense.montant.toString().includes(searchTerm);
 
-//     const matchesType =
-//       typeFilter === "tous" ||
-//       (typeFilter === "interne" && depense.typeDepenseInterne) ||
-//       (typeFilter === "externe" && depense.typeDepenseExterne);
+  //     const matchesType =
+  //       typeFilter === "tous" ||
+  //       (typeFilter === "interne" && depense.typeDepenseInterne) ||
+  //       (typeFilter === "externe" && depense.typeDepenseExterne);
 
-//     const matchesStatus =
-//       statusFilter === "tous" ||
-//       (statusFilter === "cloturees" && depense.estCloturee) ||
-//       (statusFilter === "non-cloturees" && !depense.estCloturee);
+  //     const matchesStatus =
+  //       statusFilter === "tous" ||
+  //       (statusFilter === "cloturees" && depense.estCloturee) ||
+  //       (statusFilter === "non-cloturees" && !depense.estCloturee);
 
-//     return matchesSearch && matchesType && matchesStatus;
-//   });
-  const rubriqueDepense=useQuery({queryKey:["rubriqueDepenses"],queryFn:getRubriques}).data as IRubrique[]
-  const depenses = useQuery({queryKey:["depense"],queryFn:()=>getDepenses({limit:100}),refetchInterval:2000}).data as IDepense[]
+  //     return matchesSearch && matchesType && matchesStatus;
+  //   });
+  const rubriqueDepense = useQuery({
+    queryKey: ["rubriqueDepenses"],
+    queryFn: getRubriques,
+  }).data as IRubrique[];
+  const depenses = useQuery({
+    queryKey: ["depense"],
+    queryFn: () => getDepenses({ limit: 100 }),
+    refetchInterval: 2000,
+  }).data as IDepense[];
 
   useEffect(() => {
     setModalUsableStatus(!modalUsableStatus);
@@ -140,51 +147,85 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
 
       <Card>
         <CardHeader>
-          <h3 className="text-xl font-semibold">Filtres</h3>
+          <h3 className="text-xl font-semibold">Nouvelle Dépense</h3>
         </CardHeader>
         <CardBody>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Input
-              label="Rechercher..."
-              labelPlacement="outside"
-              placeholder=""
-              startContent={<Filter className="w-4 h-4 text-gray-400" />}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Select
-              label="Type"
-              labelPlacement="outside"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-            >
-              <SelectItem key="tous">
-                Tous
-              </SelectItem>
-              <SelectItem key="interne">
-                Interne
-              </SelectItem>
-              <SelectItem key="externe">
-                Externe
-              </SelectItem>
-            </Select>
-            <Select
-              label="Statut"
-              labelPlacement="outside"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <SelectItem key="tous">
-                Tous
-              </SelectItem>
-              <SelectItem key="cloturees">
-                Clôturées
-              </SelectItem>
-              <SelectItem key="non-cloturees">
-                Non Clôturées
-              </SelectItem>
-            </Select>
-          </div>
+          <FormSimple
+            action="POST"
+            endPoint="depenses"
+            titre="Nouvelle depense"
+          >
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-row gap-3">
+                <div className="flex flex-row gap-3">
+                  <input
+                    name="utilisateur"
+                    type="hidden"
+                    value={profil?.id?.toString()}
+                  />
+                  <input
+                    name="succursaleId"
+                    type="hidden"
+                    value={profil?.succursaleId?.toString()}
+                  />
+                </div>
+                <DatePicker
+                  isRequired
+                  defaultValue={now(getLocalTimeZone())}
+                  granularity="day"
+                  label="Date depense"
+                  labelPlacement="outside"
+                  lang="fr"
+                  name="dt"
+                  translate="yes"
+                />
+              </div>
+
+              <div className="flex flex-row gap-3">
+                <NumberInput
+                  isRequired
+                  className="w-full"
+                  label="Montant depense"
+                  labelPlacement="outside"
+                  name="montant"
+                  type="number"
+                />
+                <Select
+                  isRequired
+                  className="min-w-[100px] w-fit"
+                  label="Devise"
+                  labelPlacement="outside"
+                  name="devise"
+                >
+                  <SelectItem key={"USD"}>USD</SelectItem>
+                  <SelectItem key={"CDF"}>CDF</SelectItem>
+                </Select>
+              </div>
+              <Select
+                isRequired
+                className=""
+                label="Rubrique"
+                labelPlacement="outside"
+                name="rubrique"
+              >
+                {rubriqueDepense
+                  ?.filter((rubrique) => {
+                    return rubrique.typeRubr == "D";
+                  })
+                  .map((rubrique) => (
+                    <SelectItem key={rubrique.id}>
+                      {rubrique.libelle}
+                    </SelectItem>
+                  ))}
+              </Select>
+              <Input
+                label="Beneficiaire"
+                labelPlacement="outside"
+                name="beneficiaire"
+                type="text"
+              />
+            </div>
+          </FormSimple>
         </CardBody>
       </Card>
 
@@ -207,12 +248,12 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
                 {depenses?.map((depense) => (
                   <tr key={depense.id} className="border-b">
                     <td className="py-3 px-4">
-                      {new Date(depense.dateDepense).toLocaleDateString("fr-FR")}
+                      {new Date(depense.dateDepense).toLocaleDateString(
+                        "fr-FR"
+                      )}
                     </td>
                     <td className="py-3 px-4">{depense.rubrique.libelle}</td>
-                    <td className="py-3 px-4">
-                      {depense.beneficiaire}
-                    </td>
+                    <td className="py-3 px-4">{depense.beneficiaire}</td>
                     <td className="py-3 px-4">
                       {depense.montant} {depense.devise}
                     </td>
@@ -222,19 +263,21 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${
-                          depense.estCloturee!=="N"
+                          depense.estCloturee !== "N"
                             ? "bg-success/10 text-success"
                             : "bg-warning text-danger"
                         }`}
                       >
-                        {depense.estCloturee==="N" ? "Non clôturée" : "Cloturée"}
+                        {depense.estCloturee === "N"
+                          ? "Non clôturée"
+                          : "Cloturée"}
                       </span>
                     </td>
                     <td className="py-3 px-4">
                       <Link href={`/depense-detail?id=${depense.id}`}>
-                      <Button color="primary" size="sm" variant="light">
-                        Détails
-                      </Button>
+                        <Button color="primary" size="sm" variant="light">
+                          Détails
+                        </Button>
                       </Link>
                     </td>
                   </tr>
@@ -244,72 +287,6 @@ export default function DepensesPage({profil}:{profil:IUtilisateur}) {
           </div>
         </CardBody>
       </Card>
-      <ModalWithForm
-        action="POST"
-        endPoint="depenses"
-        isOpened={modalUsableStatus}
-        titre="Nouvelle depense"
-      >
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-row gap-3">
-            <div className="flex flex-row gap-3">
-            <input name="utilisateur" type="hidden" value={profil?.id?.toString()} />
-            <input name="succursaleId" type="hidden" value={profil?.succursaleId?.toString()} />
-            </div>
-            <DatePicker
-            isRequired
-                defaultValue={now(getLocalTimeZone())}
-             granularity="day"
-             label="Date depense"
-              labelPlacement="outside"
-              lang="fr"
-              name="dt"
-              translate="yes"
-            />
-          </div>
-
-          <div className="flex flex-row gap-3">
-            <NumberInput
-            isRequired
-              className="w-full"
-              label="Montant depense"
-              labelPlacement="outside"
-              name="montant"
-              type="number"
-            />
-            <Select
-            isRequired
-              className="min-w-[100px] w-fit"
-              label="Devise"
-              labelPlacement="outside"
-              name="devise"
-            >
-              <SelectItem key={"USD"}>USD</SelectItem>
-              <SelectItem key={"CDF"}>CDF</SelectItem>
-            </Select>
-          </div>
-          <Select
-            isRequired
-              className=""
-              label="Rubrique"
-              labelPlacement="outside"
-              name="rubrique"
-            >
-              {
-                rubriqueDepense?.filter((rubrique)=>{return rubrique.typeRubr=="D"}).map(rubrique=>(
-                  <SelectItem key={rubrique.id}>{rubrique.libelle}</SelectItem>
-                ))
-              }
-            </Select>
-          <Input
-            label="Beneficiaire"
-            labelPlacement="outside"
-            name="beneficiaire"
-            type="text"
-          />
-          
-        </div>
-      </ModalWithForm>
     </div>
   );
 }
