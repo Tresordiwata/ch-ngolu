@@ -65,7 +65,7 @@ model Depense {
   utilisateurId        String
   rubriqueId           Int
   rubrique             Rubrique? @relation(fields: [rubriqueId], references: [id])
-  estCloturee          ClotureStatus       @default(N)
+  estCloturee          ClotureStatus       @default(OL)
   fournisseur          Fournisseur?        @relation(fields: [fournisseurId], references: [id])
   beneficiaire         String?        
   succursale           Succursale?          @relation(fields: [succursaleId], references: [id])
@@ -108,7 +108,7 @@ model Recette {
   rubrique             Rubrique? @relation(fields: [rubriqueId], references: [id])
   succursaleId         String
   succursale           Succursale          @relation(fields: [succursaleId], references: [id])
-  estCloturee          ClotureStatus       @default(N)
+  estCloturee          ClotureStatus       @default(OL)
   utilisateurId        String         
   utilisateur          Utilisateur         @relation(fields: [utilisateurId], references: [id])
   createdAt            DateTime            @default(now())
