@@ -9,8 +9,8 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import moment, { lang } from "moment";
-import n2words from "n2words";
+import moment from "moment";
+// import n2words from "n2words";
 import React from "react";
 
 // import { BACKEND_URL } from "@/lib/utils";
@@ -288,7 +288,7 @@ const Recu = ({ recette }: { recette?: IRecette }) => {
               }}
             >
               <Text style={{textDecoration:"underline"}}>Montant en lettre : </Text>
-              <Text style={{textAlign:"center", marginTop:11}}>{n2words(recette?.montant, { lang: "fr" })} {recette?.devise=="USD"?"Dollars":"Francs congolais"}</Text>
+              {/* <Text style={{textAlign:"center", marginTop:11}}>{n2words(recette?.montant, { lang: "fr" })} {recette?.devise=="USD"?"Dollars":"Francs congolais"}</Text> */}
             </View>
           </View>
         </Page>

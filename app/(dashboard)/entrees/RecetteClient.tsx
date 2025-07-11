@@ -232,7 +232,6 @@ export default function RecetteClient({ profil }: { profil: IUtilisateur }) {
                 </Select>
               </div>
             </FormSimple>
-            <Button onPress={()=>setOpen(true)}>Modal</Button>
           </div>
         </CardBody>
       </Card>
