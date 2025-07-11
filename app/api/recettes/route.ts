@@ -33,18 +33,25 @@ export async function GET(Request: NextRequest) {
             status: "D",
           },
         },
+        orderBy:{
+          createdAt:"desc"
+        }
       });
     } else {
       recettes = await prisma.recette.findMany({
         include: {
           utilisateur: true,
           rubrique: true,
+          succursale:true
         },
         where: {
           succursaleId: profil.succursaleId.toString(),
           NOT: {
             status: "D",
           },
+        },
+        orderBy:{
+          createdAt:"desc"
         },
         take: Number(limit),
       });
@@ -59,7 +66,6 @@ export async function GET(Request: NextRequest) {
 export async function POST(Request: NextRequest) {
   const {
     rubrique,
-    
     devise,
     dt,
     montant,
@@ -78,7 +84,12 @@ export async function POST(Request: NextRequest) {
         observation: "",
         utilisateurId: utilisateur,
         rubriqueId: Number(rubrique),
+        estCloturee:"OL"
       },
+      include:{
+        rubrique:true,
+        succursale:true
+      }
     });
 
     const caisseConcerned = await prisma.caisse.findFirst({

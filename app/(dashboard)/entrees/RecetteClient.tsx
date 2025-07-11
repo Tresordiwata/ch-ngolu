@@ -14,9 +14,9 @@ import {
   DatePicker,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, FileUp, Filter, Grip, FilePlus } from "lucide-react";
+import { Plus, FileUp, Filter, Grip, FilePlus, X, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
-import {now, getLocalTimeZone} from "@internationalized/date";
+import { now, getLocalTimeZone } from "@internationalized/date";
 import Link from "next/link";
 
 import ModalWithForm from "@/reusables/ModalWithForm";
@@ -28,89 +28,103 @@ import { IRubrique } from "@/lib/types/rubrique";
 import { getRecettes } from "@/services/recettes";
 import { IRecette } from "@/lib/types/recette";
 import FormSimple from "@/reusables/FormSimple";
+import { Modal } from "antd";
+import Recu from "@/print/Recu";
 
-
-export default function RecetteClient({profil}:{profil:IUtilisateur}) {
+export default function RecetteClient({ profil }: { profil: IUtilisateur }) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("tous");
   const [statusFilter, setStatusFilter] = useState("tous");
   const [modalUsableStatus, setModalUsableStatus] = useState(false);
+  const [open, setOpen]=useState(false)
+  const [contenu,setContenu]=useState<IRecette | undefined>(undefined)
 
-//   const { data: depenses, isLoading: depensesLoading } = useQuery<IDepense[]>({
-//     queryKey: ["depenses", utilisateur?.succursaleId],
-//     queryFn: async () => {
-//       const response = await fetch(
-//         `/api/depenses?succursaleId=${utilisateur?.succursaleId}`
-//       );
+  //   const { data: depenses, isLoading: depensesLoading } = useQuery<IDepense[]>({
+  //     queryKey: ["depenses", utilisateur?.succursaleId],
+  //     queryFn: async () => {
+  //       const response = await fetch(
+  //         `/api/depenses?succursaleId=${utilisateur?.succursaleId}`
+  //       );
 
-//       if (!response.ok)
-//         throw new Error("Erreur lors du chargement des dépenses");
+  //       if (!response.ok)
+  //         throw new Error("Erreur lors du chargement des dépenses");
 
-//       return response.json();
-//     },
-//     enabled: !!utilisateur?.succursaleId,
-//   });
+  //       return response.json();
+  //     },
+  //     enabled: !!utilisateur?.succursaleId,
+  //   });
 
-//   const { data: typesDepenseInterne } = useQuery<ITypeDepense[]>({
-//     queryKey: ["types-depense-interne"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/types-depense-interne");
+  //   const { data: typesDepenseInterne } = useQuery<ITypeDepense[]>({
+  //     queryKey: ["types-depense-interne"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/types-depense-interne");
 
-//       if (!response.ok)
-//         throw new Error(
-//           "Erreur lors du chargement des types de dépense interne"
-//         );
+  //       if (!response.ok)
+  //         throw new Error(
+  //           "Erreur lors du chargement des types de dépense interne"
+  //         );
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const { data: typesDepenseExterne } = useQuery<ITypeDepense[]>({
-//     queryKey: ["types-depense-externe"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/types-depense-externe");
+  //   const { data: typesDepenseExterne } = useQuery<ITypeDepense[]>({
+  //     queryKey: ["types-depense-externe"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/types-depense-externe");
 
-//       if (!response.ok)
-//         throw new Error(
-//           "Erreur lors du chargement des types de dépense externe"
-//         );
+  //       if (!response.ok)
+  //         throw new Error(
+  //           "Erreur lors du chargement des types de dépense externe"
+  //         );
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const { data: fournisseurs } = useQuery<IFournisseur[]>({
-//     queryKey: ["fournisseurs"],
-//     queryFn: async () => {
-//       const response = await fetch("/api/fournisseurs");
+  //   const { data: fournisseurs } = useQuery<IFournisseur[]>({
+  //     queryKey: ["fournisseurs"],
+  //     queryFn: async () => {
+  //       const response = await fetch("/api/fournisseurs");
 
-//       if (!response.ok)
-//         throw new Error("Erreur lors du chargement des fournisseurs");
+  //       if (!response.ok)
+  //         throw new Error("Erreur lors du chargement des fournisseurs");
 
-//       return response.json();
-//     },
-//   });
+  //       return response.json();
+  //     },
+  //   });
 
-//   const filteredDepenses = depenses?.filter((depense) => {
-//     const matchesSearch =
-//       depense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       depense.montant.toString().includes(searchTerm);
+  //   const filteredDepenses = depenses?.filter((depense) => {
+  //     const matchesSearch =
+  //       depense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       depense.montant.toString().includes(searchTerm);
 
-//     const matchesType =
-//       typeFilter === "tous" ||
-//       (typeFilter === "interne" && depense.typeDepenseInterne) ||
-//       (typeFilter === "externe" && depense.typeDepenseExterne);
+  //     const matchesType =
+  //       typeFilter === "tous" ||
+  //       (typeFilter === "interne" && depense.typeDepenseInterne) ||
+  //       (typeFilter === "externe" && depense.typeDepenseExterne);
 
-//     const matchesStatus =
-//       statusFilter === "tous" ||
-//       (statusFilter === "cloturees" && depense.estCloturee) ||
-//       (statusFilter === "non-cloturees" && !depense.estCloturee);
+  //     const matchesStatus =
+  //       statusFilter === "tous" ||
+  //       (statusFilter === "cloturees" && depense.estCloturee) ||
+  //       (statusFilter === "non-cloturees" && !depense.estCloturee);
 
-//     return matchesSearch && matchesType && matchesStatus;
-//   });
-  const rubriqueDepense=useQuery({queryKey:["rubriqueDepenses"],queryFn:getRubriques}).data as IRubrique[]
-  const recettes = useQuery({queryKey:["depense"],queryFn:()=>getRecettes({limit:100}),refetchInterval:2000}).data as IRecette[]
+  //     return matchesSearch && matchesType && matchesStatus;
+  //   });
+  const rubriqueDepense = useQuery({
+    queryKey: ["rubriqueDepenses"],
+    queryFn: getRubriques,
+  }).data as IRubrique[];
+  const recettes = useQuery({
+    queryKey: ["depense"],
+    queryFn: () => getRecettes({ limit: 100 }),
+    refetchInterval: 2000,
+  }).data as IRecette[];
+  const afterSubmitCallBack = (recette:any) => {
+    setOpen(true)
+    setContenu(recette)
+  };
 
   useEffect(() => {
     setModalUsableStatus(!modalUsableStatus);
@@ -141,70 +155,84 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
 
       <Card>
         <CardHeader>
-          <h3 className="text-xl font-semibold flex gap-3"><FilePlus />Nouvelle Recette</h3>
+          <h3 className="text-xl font-semibold flex gap-3">
+            <FilePlus />
+            Nouvelle Recette
+          </h3>
         </CardHeader>
         <CardBody>
           <div className="">
-          <FormSimple
-        action="POST"
-        endPoint="recettes"
-        
-        titre="Nouvelle recette"
-      >
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-row gap-3">
-            <div className="flex flex-row gap-3">
-            <input name="utilisateur" type="hidden" value={profil?.id?.toString()} />
-            <input name="succursaleId" type="hidden" value={profil?.succursaleId?.toString()} />
-            </div>
-            <DatePicker
-            isRequired
-             granularity="day"
-             defaultValue={now(getLocalTimeZone())}
-             label="Date recette"
-              labelPlacement="outside"
-              lang="fr"
-              name="dt"
-              translate="yes"
-            />
-          </div>
+            <FormSimple
+              action="POST"
+              endPoint="recettes"
+              afterSubmitFn={afterSubmitCallBack}
+              titre="Nouvelle recette"
+            >
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-row gap-3">
+                  <div className="flex flex-row gap-3">
+                    <input
+                      name="utilisateur"
+                      type="hidden"
+                      value={profil?.id?.toString()}
+                    />
+                    <input
+                      name="succursaleId"
+                      type="hidden"
+                      value={profil?.succursaleId?.toString()}
+                    />
+                  </div>
+                  <DatePicker
+                    isRequired
+                    granularity="day"
+                    defaultValue={now(getLocalTimeZone())}
+                    label="Date recette"
+                    labelPlacement="outside"
+                    lang="fr"
+                    name="dt"
+                    translate="yes"
+                  />
+                </div>
 
-          <div className="flex flex-row gap-3">
-            <NumberInput
-            isRequired
-              className="w-full"
-              label="Montant depense"
-              labelPlacement="outside"
-              name="montant"
-              type="number"
-            />
-            <Select
-            isRequired
-              className="min-w-[100px] w-fit"
-              label="Devise"
-              labelPlacement="outside"
-              name="devise"
-            >
-              <SelectItem key={"USD"}>USD</SelectItem>
-              <SelectItem key={"CDF"}>CDF</SelectItem>
-            </Select>
-          </div>
-          <Select
-            isRequired
-              className=""
-              label="Rubrique"
-              labelPlacement="outside"
-              name="rubrique"
-            >
-              {
-                rubriqueDepense?.filter((rubrique)=>{return rubrique.typeRubr=="R"}).map(rubrique=>(
-                  <SelectItem key={rubrique.id}>{rubrique.libelle}</SelectItem>
-                ))
-              }
-            </Select>
-          
-        </div>
-      </FormSimple>
+                <div className="flex flex-row gap-3">
+                  <NumberInput
+                    isRequired
+                    className="w-full"
+                    label="Montant recette"
+                    labelPlacement="outside"
+                    name="montant"
+                  />
+                  <Select
+                    isRequired
+                    className="min-w-[100px] w-fit"
+                    label="Devise"
+                    labelPlacement="outside"
+                    name="devise"
+                  >
+                    <SelectItem key={"USD"}>USD</SelectItem>
+                    <SelectItem key={"CDF"}>CDF</SelectItem>
+                  </Select>
+                </div>
+                <Select
+                  isRequired
+                  className=""
+                  label="Rubrique"
+                  labelPlacement="outside"
+                  name="rubrique"
+                >
+                  {rubriqueDepense
+                    ?.filter((rubrique) => {
+                      return rubrique.typeRubr == "R";
+                    })
+                    .map((rubrique) => (
+                      <SelectItem key={rubrique.id}>
+                        {rubrique.libelle}
+                      </SelectItem>
+                    ))}
+                </Select>
+              </div>
+            </FormSimple>
+            <Button onPress={()=>setOpen(true)}>Modal</Button>
           </div>
         </CardBody>
       </Card>
@@ -227,10 +255,12 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
                 {recettes?.map((recette) => (
                   <tr key={recette.id} className="border-b">
                     <td className="py-3 px-4">
-                      {new Date(recette.dateRecette).toLocaleDateString("fr-FR")}
+                      {new Date(recette.dateRecette).toLocaleDateString(
+                        "fr-FR"
+                      )}
                     </td>
                     <td className="py-3 px-4">{recette.rubrique.libelle}</td>
-                   
+
                     <td className="py-3 px-4">
                       {recette.montant} {recette.devise}
                     </td>
@@ -240,19 +270,24 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${
-                          recette.estCloturee!=="N"
+                          recette.estCloturee !== "N"
                             ? "bg-success/10 text-success"
                             : "bg-warning text-danger"
                         }`}
                       >
-                        {recette.estCloturee==="N" ? "Non clôturée" : "Cloturée"}
+                        {recette.estCloturee === "N"
+                          ? "Non clôturée"
+                          : "Cloturée"}
                       </span>
                     </td>
                     <td className="py-3 px-4">
+                        <Button onPress={()=>afterSubmitCallBack(recette)} color="primary" size="sm" variant="light">
+                          <Printer />
+                        </Button>
                       <Link href={`/recette-detail?id=${recette.id}`}>
-                      <Button color="primary" size="sm" variant="light">
-                        Détails
-                      </Button>
+                        <Button color="primary" size="sm" variant="light">
+                          Détails
+                        </Button>
                       </Link>
                     </td>
                   </tr>
@@ -262,7 +297,17 @@ export default function RecetteClient({profil}:{profil:IUtilisateur}) {
           </div>
         </CardBody>
       </Card>
-      
+      <Modal style={{minHeight:"700px"}} 
+          title={<div className="flex justify-between">
+            <div> Impression Recu</div>
+            <Button isIconOnly={true} size="sm" color="secondary" variant="ghost" onPress={()=>setOpen(false)}><X /></Button>
+            </div>} 
+          footer={false} 
+          open={open} closable={false}>
+        <div className="">
+       <Recu recette={contenu} />
+        </div>
+      </Modal>
     </div>
   );
 }

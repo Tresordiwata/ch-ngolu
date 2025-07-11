@@ -18,8 +18,8 @@ export async function POST(Request: NextRequest) {
   const depenses = await prisma.depense.findMany({
     where: {
       dateDepense: {
-        gte: new Date(dateFrom),
-        lte: new Date(dateEnd),
+        gte: new Date(`${dateFrom}T00:00:00Z`),
+        lt: new Date(`${dateEnd}T23:59:59.999Z`),
       },
       AND: {
         devise: devise,
@@ -33,8 +33,8 @@ export async function POST(Request: NextRequest) {
   const recettes = await prisma.recette.findMany({
     where: {
       dateRecette: {
-        gte: new Date(dateFrom),
-        lte: new Date(dateEnd),
+        gte: new Date(`${dateFrom}T00:00:00Z`),
+        lt: new Date(`${dateEnd}T23:59:59.999Z`),
       },
       AND: {
         devise: devise,

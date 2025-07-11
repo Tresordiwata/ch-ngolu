@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { IRecette } from "@/lib/types/recette";
 import {
   Modal,
   ModalContent,
@@ -22,6 +23,7 @@ export default function FormSimple({
   action,
   endPoint,
   beforeSubmitFn,
+  afterSubmitFn
 }: {
 
   titre?: React.ReactNode;
@@ -31,6 +33,7 @@ export default function FormSimple({
   action: string;
   endPoint: string;
   beforeSubmitFn?: (arg?: any) => void;
+  afterSubmitFn?:(arg?:IRecette | any | undefined)=>void
 }) {
   const [confirmSubmitForm, setConfirmSubmitForm] = useState(false);
   const [spinning, setSpinning] = useState(false);
@@ -63,9 +66,10 @@ export default function FormSimple({
         if (response !== null) {
           setConfirmSubmitForm(false);
           const formulaire = document.querySelector("#f") as HTMLFormElement;
-
           formulaire.reset();
           onOpenChange();
+          
+          afterSubmitFn && afterSubmitFn(response)
         }
       })
       .catch(() => {
