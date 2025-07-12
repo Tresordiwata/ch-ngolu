@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+// import { cookies } from "next/headers";
+// import { redirect } from "next/navigation";
 
 export default async function AuthLayout({
   children,
@@ -7,7 +7,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
 
-  const c = await cookies();
+  // const c = await cookies();
   
   // c.get("connected") && redirect("/dashboard");
 

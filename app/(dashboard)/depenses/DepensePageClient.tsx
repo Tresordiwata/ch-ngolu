@@ -28,6 +28,7 @@ import { IRubrique } from "@/lib/types/rubrique";
 import { getDepenses } from "@/services/depenses";
 import { date } from "zod";
 import FormSimple from "@/reusables/FormSimple";
+import moment from "moment";
 
 export default function DepensesPage({ profil }: { profil: IUtilisateur }) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
@@ -169,10 +170,10 @@ export default function DepensesPage({ profil }: { profil: IUtilisateur }) {
                     value={profil?.succursaleId?.toString()}
                   />
                 </div>
-                <DatePicker
+                <Input
+                  type="date"
                   isRequired
-                  defaultValue={now(getLocalTimeZone())}
-                  granularity="day"
+                  defaultValue={moment().format("YYYY-MM-DD")}
                   label="Date depense"
                   labelPlacement="outside"
                   lang="fr"

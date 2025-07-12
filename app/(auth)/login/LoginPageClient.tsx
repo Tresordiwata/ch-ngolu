@@ -4,9 +4,8 @@
 
 import { Button } from "@heroui/button";
 import { toast, ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { Input } from "@heroui/input";
 import Link from "next/link";
 
@@ -14,7 +13,6 @@ import { useAuthStore } from "@/lib/store/authStore";
 
 export default function LoginPageClient() {
   const [submitting,setSubmitting]=useState<boolean>(false)
-  const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const handleSubmit = (data: React.FocusEvent<HTMLFormElement>) => {
@@ -82,7 +80,7 @@ export default function LoginPageClient() {
         <div className="text-center">
           <div className="flex justify-center">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-              <Image
+              <img
                 alt="logo"
                 className=" text-white"
                 height={120}

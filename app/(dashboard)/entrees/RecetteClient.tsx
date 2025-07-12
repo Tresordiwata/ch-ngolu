@@ -30,6 +30,7 @@ import { IRecette } from "@/lib/types/recette";
 import FormSimple from "@/reusables/FormSimple";
 import { Modal } from "antd";
 import Recu from "@/print/Recu";
+import moment from "moment";
 
 export default function RecetteClient({ profil }: { profil: IUtilisateur }) {
   const utilisateur = useAuthStore((state) => state.utilisateur);
@@ -182,10 +183,10 @@ export default function RecetteClient({ profil }: { profil: IUtilisateur }) {
                       value={profil?.succursaleId?.toString()}
                     />
                   </div>
-                  <DatePicker
+                  <Input
+                    type="date"
                     isRequired
-                    granularity="day"
-                    defaultValue={now(getLocalTimeZone())}
+                    defaultValue={moment().format("YYYY-MM-DD")}
                     label="Date recette"
                     labelPlacement="outside"
                     lang="fr"

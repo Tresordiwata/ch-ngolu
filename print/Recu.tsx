@@ -1,5 +1,5 @@
 "use client";
-import { IRecette } from "@/lib/types/recette";
+import React from "react";
 import {
   Document,
   Image,
@@ -10,12 +10,15 @@ import {
   View,
 } from "@react-pdf/renderer";
 import moment from "moment";
+
+import { enLettresSansDevise } from "./../app/utils/fns";
+
+import { IRecette } from "@/lib/types/recette";
 // import n2words from "n2words";
-import React from "react";
 
 // import { BACKEND_URL } from "@/lib/utils";
 // import { IFactureImport } from "@/lib/types/factureImport";
-
+// const n2words = require("n2words");
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
@@ -68,7 +71,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   table: {
-    display: "table",
     width: "100%",
     marginBottom: 30,
   },
@@ -198,7 +200,7 @@ const entete = {
   alignItem: "center",
 };
 const Recu = ({ recette }: { recette?: IRecette }) => {
-
+  const montant = enLettresSansDevise(recette?.montant);
 
   return (
     <PDFViewer width={"100%"}>
@@ -273,7 +275,9 @@ const Recu = ({ recette }: { recette?: IRecette }) => {
                 fontSize: 12,
               }}
             >
-              <Text>Montant : {recette?.montant} {recette?.devise}</Text>
+              <Text>
+                Montant : {recette?.montant} {recette?.devise}
+              </Text>
             </View>
             <View
               style={{
@@ -281,14 +285,19 @@ const Recu = ({ recette }: { recette?: IRecette }) => {
                 paddingRight: 20,
                 textAlign: "left",
                 fontSize: 12,
-                display:"flex",
-                flexDirection:"column",
-                justifyContent:"center",
-                alignItems:"center"
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Text style={{textDecoration:"underline"}}>Montant en lettre : </Text>
-              {/* <Text style={{textAlign:"center", marginTop:11}}>{n2words(recette?.montant, { lang: "fr" })} {recette?.devise=="USD"?"Dollars":"Francs congolais"}</Text> */}
+              <Text style={{ textDecoration: "underline" }}>
+                Nous disons : {" "}
+              </Text>
+              <Text style={{ textAlign: "center", marginTop: 11 }}>
+                {montant}{" "}
+                {recette?.devise == "USD" ? "Dollars" : "Francs congolais"}
+              </Text>
             </View>
           </View>
         </Page>
